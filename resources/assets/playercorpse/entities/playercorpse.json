@@ -2,50 +2,11 @@
   "code": "playercorpse",
   "class": "EntityPlayerCorpse",
   "habitat": "Land",
-  "hitboxSize": { "x": 0.5, "y": 2 },
+  "hitboxSize": { "x": 1, "y": 0.3 },
   "client": {
-    "size": 0.5,
     "renderer": "Shape",
-    "shape": { "base": "entity/soul" },
-    "behaviors": [{ "code": "passivephysics" }, { "code": "floatupwhenstuck" }],
-    "animations": [
-      {
-        "code": "rotating",
-        "animation": "rotating",
-        "animationSpeed": 0.5,
-        "blendmode": "addaverage"
-      },
-      {
-        "code": "idle",
-        "animation": "idle",
-        "animationSpeed": 0.1,
-        "blendmode": "addaverage"
-      },
-      {
-        "code": "flowup",
-        "animation": "flowup",
-        "animationSpeed": 0.25,
-        "blendmode": "addaverage"
-      },
-      {
-        "code": "circle-small",
-        "animation": "circle-small",
-        "animationSpeed": 1,
-        "blendmode": "addaverage"
-      },
-      {
-        "code": "circle-middle",
-        "animation": "circle-middle",
-        "animationSpeed": 1,
-        "blendmode": "addaverage"
-      },
-      {
-        "code": "circle-large",
-        "animation": "circle-large",
-        "animationSpeed": 1,
-        "blendmode": "addaverage"
-      }
-    ]
+    "shape": { "base": "game:block/bone/carcass/humanoid2" },
+    "behaviors": [{ "code": "passivephysics" }, { "code": "floatupwhenstuck" }]
   },
   "server": {
     "behaviors": [
@@ -54,10 +15,5 @@
       { "code": "health", "currenthealth": 100, "maxhealth": 100 }
     ]
   },
-  "falldamage": false,
-  "idlechance": 0.1,
-  "sounds": {
-    "death": "creature/soul/death",
-    "idle": "creature/soul/idle"
-  }
+  "falldamage": false
 }

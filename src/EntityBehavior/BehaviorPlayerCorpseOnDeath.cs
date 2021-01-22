@@ -1,4 +1,5 @@
 using System;
+using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
@@ -12,33 +13,38 @@ namespace PlayerCorpse
         public override string PropertyName() { return "playercorpseondeath"; }
         public override void OnEntityDeath(DamageSource damageSourceForDeath)
         {
-            if (entity is EntityPlayer entityPlayer &&
-                entityPlayer.Properties.Server?.Attributes?.GetBool("keepContents", false) != true &&
-                Config.Current.SaveInventoryTypes.Val.Length != 0)
+            if (!(entity is EntityPlayer entityPlayer) ||
+                entityPlayer.Properties.Server?.Attributes?.GetBool("keepContents", false) == true)
             {
-                ICoreAPI api = entity.Api;
-                IPlayer player = api.World.PlayerByUid(entityPlayer.PlayerUID);
+                base.OnEntityDeath(damageSourceForDeath);
+                return;
+            }
 
-                AssetLocation loc = new AssetLocation(Constants.MOD_ID, "playercorpse");
-                EntityProperties type = api.World.GetEntityType(loc);
-                Entity corpse = api.World.ClassRegistry.CreateEntity(type);
+            ICoreAPI api = entity.Api;
+            IPlayer player = api.World.PlayerByUid(entityPlayer.PlayerUID);
 
-                int quantitySlots = 0;
-                foreach (var invClassName in Config.Current.SaveInventoryTypes.Val)
-                {
-                    quantitySlots += player.InventoryManager.GetOwnInventory(invClassName).Count;
-                }
+            Entity corpse = api.World.ClassRegistry.CreateEntity(
+                api.World.GetEntityType(new AssetLocation(Constants.MOD_ID, "playercorpse"))
+            );
 
+            int quantitySlots = 0;
+            foreach (var invClassName in Config.Current.SaveInventoryTypes.Val)
+            {
+                quantitySlots += player.InventoryManager.GetOwnInventory(invClassName).Count;
+            }
+
+            if (quantitySlots != 0)
+            {
                 (corpse as EntityPlayerCorpse).WatchedAttributes.SetString("ownerUID", player.PlayerUID);
                 (corpse as EntityPlayerCorpse).inventory = new InventoryGeneric(quantitySlots, "playercorpse-" + player.PlayerUID, api);
+
                 int lastSlotId = 0;
                 foreach (var invClassName in Config.Current.SaveInventoryTypes.Val)
                 {
                     if (invClassName == GlobalConstants.characterInvClassName &&
                         entityPlayer.Properties.Server?.Attributes?.GetBool("dropArmorOnDeath") != true) continue;
 
-                    IInventory inv = player.InventoryManager.GetOwnInventory(invClassName);
-                    foreach (var slot in inv)
+                    foreach (var slot in player.InventoryManager.GetOwnInventory(invClassName))
                     {
                         if (slot.Empty) continue;
                         if (invClassName == GlobalConstants.characterInvClassName &&
@@ -57,14 +63,14 @@ namespace PlayerCorpse
                             }
                             catch (Exception e)
                             {
-                                api.Logger.Warning("Player's inventory still contains " + slot.Itemstack.Collectible.Code + ". Trying to force move.");
+                                api.Logger.Warning("Player's inventory still contains " + slot.Itemstack.Collectible.Code + "");
                                 api.Logger.Error(e.Message);
                             }
                         }
                     }
                 }
 
-                corpse.ServerPos.SetPos(entityPlayer.ServerPos.XYZ.AddCopy(0, 5, 0));
+                corpse.ServerPos.SetPos(entityPlayer.ServerPos.XYZ.AddCopy(0, 2, 0));
                 corpse.Pos.SetFrom(corpse.ServerPos);
                 corpse.World = api.World;
 
@@ -72,20 +78,29 @@ namespace PlayerCorpse
                 {
                     if (Config.Current.CreateWaypoint.Val == "always")
                     {
-                        string timeString = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                         (player as IServerPlayer).SendMessageAsClient(string.Format(
-                        "/waypoint addati {0} ={1} ={2} ={3} {4} {5} Death: {6}",
-                         Config.Current.WaypointIcon.Val,
-                         entity.Pos.X, entity.Pos.Y, entity.Pos.Z,
-                         Config.Current.PinWaypoint.Val,
-                         Config.Current.WaypointColor.Val,
-                         timeString), GlobalConstants.AllChatGroups);
+
+                            "/waypoint addati {0} ={1} ={2} ={3} {4} {5} Death: {6}",
+                            Config.Current.WaypointIcon.Val,
+                            entity.Pos.X, entity.Pos.Y, entity.Pos.Z,
+                            Config.Current.PinWaypoint.Val,
+                            Config.Current.WaypointColor.Val,
+                            DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+
+                        ), GlobalConstants.AllChatGroups);
                     }
-                    if (Config.Current.CreateDeathSoul.Val)
+
+                    if (Config.Current.CreateCorpse.Val)
+                    {
                         api.World.SpawnEntity(corpse);
+                    }
+
+                    if (Config.Current.MaxDeathContentSavedPerPlayer.Val > 0)
+                    {
+                        Core.SaveDeathContent((corpse as EntityPlayerCorpse).inventory, player);
+                    }
                 }
             }
-            base.OnEntityDeath(damageSourceForDeath);
         }
     }
 }

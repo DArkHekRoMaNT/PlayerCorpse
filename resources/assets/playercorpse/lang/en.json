@@ -1,3 +1,4 @@
 {
-  "item-creature-playercorpse": "Soul"
+  "item-creature-playercorpse": "Player corpse",
+  "blockhelp-collect": "Collect"
 }

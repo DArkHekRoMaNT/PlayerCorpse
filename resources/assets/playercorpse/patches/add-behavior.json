@@ -1,0 +1,16 @@
+[
+  {
+    "file": "game:entities/humanoid/player.json",
+    "reason": "add",
+    "path": "/server/behaviors/-",
+    "value": { "code": "playercorpseondeath" },
+    "side": "Server"
+  },
+  {
+    "file": "game:entities/humanoid/player.json",
+    "reason": "add",
+    "path": "/client/behaviors/-",
+    "value": { "code": "playercorpseondeath" },
+    "side": "Client"
+  }
+]

@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
+using SharedUtils;
+using SharedUtils.Extensions;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
@@ -18,7 +20,7 @@ namespace PlayerCorpse
             base.Start(api);
             this.api = api;
 
-            Config.Current = api.LoadOrCreateConfig<Config>(Constants.MOD_ID + ".json");
+            Config.Current = api.LoadOrCreateConfig<Config>(ConstantsCore.ModId + ".json");
             if (Config.Current.CreateWaypoint.Val == "auto")
             {
                 Config.Current.CreateWaypoint.Val = api.ModLoader.IsModEnabled("streamdc") ? "none" : "always";
@@ -32,7 +34,7 @@ namespace PlayerCorpse
 
             string returnthings_help = "/returnthings [from player] [to player] [index] or /returnthings [from player] list";
             api.RegisterCommand("returnthings",
-                Constants.PREFIX_DSC + "Returns things losing on last death", returnthings_help,
+                ConstantsCore.ModPrefix + "Returns things losing on last death", returnthings_help,
                 (IServerPlayer player, int groupId, CmdArgs args) =>
                 {
                     if (args.Length < 2)
@@ -48,7 +50,7 @@ namespace PlayerCorpse
                         return;
                     }
 
-                    string datapath = api.GetOrCreateDataPath($"ModData/{api.GetWorldId()}/{Constants.MOD_ID}/{player.PlayerUID}");
+                    string datapath = api.GetOrCreateDataPath($"ModData/{api.GetWorldId()}/{ConstantsCore.ModId}/{player.PlayerUID}");
                     string[] files = Directory.GetFiles(datapath).OrderByDescending(f => new FileInfo(f).Name).ToArray();
 
                     if (args[1] == "list")
@@ -110,7 +112,7 @@ namespace PlayerCorpse
             ICoreAPI api = player.Entity?.Api;
             if (api == null) throw new NullReferenceException("player.Entity.api is null");
 
-            string datapath = api.GetOrCreateDataPath($"ModData/{api.GetWorldId()}/{Constants.MOD_ID}/{player.PlayerUID}");
+            string datapath = api.GetOrCreateDataPath($"ModData/{api.GetWorldId()}/{ConstantsCore.ModId}/{player.PlayerUID}");
             string[] files = Directory.GetFiles(datapath).OrderByDescending(f => new FileInfo(f).Name).ToArray();
 
             for (int i = files.Count() - 1; i > Config.Current.MaxDeathContentSavedPerPlayer.Val - 2; i--)
@@ -131,7 +133,7 @@ namespace PlayerCorpse
             if (api == null) throw new NullReferenceException("player.Entity.api is null");
             if (Config.Current.MaxDeathContentSavedPerPlayer.Val <= offset) throw new IndexOutOfRangeException("offset is too large or save data disabled");
 
-            string datapath = api.GetOrCreateDataPath($"ModData/{api.GetWorldId()}/{Constants.MOD_ID}/{player.PlayerUID}");
+            string datapath = api.GetOrCreateDataPath($"ModData/{api.GetWorldId()}/{ConstantsCore.ModId}/{player.PlayerUID}");
             string file = Directory.GetFiles(datapath).OrderByDescending(f => new FileInfo(f).Name).ToArray().ElementAt(offset);
 
             TreeAttribute tree = new TreeAttribute();

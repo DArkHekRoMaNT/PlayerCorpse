@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using SharedUtils;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
@@ -160,7 +161,7 @@ namespace PlayerCorpse
         {
             return new WorldInteraction[] {
                 new WorldInteraction{
-                    ActionLangCode = Constants.MOD_ID + ":blockhelp-collect",
+                    ActionLangCode = ConstantsCore.ModId + ":blockhelp-collect",
                     MouseButton = EnumMouseButton.Right
                 }
             };

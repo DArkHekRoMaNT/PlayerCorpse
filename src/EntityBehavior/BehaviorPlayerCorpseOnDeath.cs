@@ -1,4 +1,6 @@
 using System;
+using SharedUtils;
+using SharedUtils.Extensions;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
@@ -24,7 +26,7 @@ namespace PlayerCorpse
             IPlayer player = api.World.PlayerByUid(entityPlayer.PlayerUID);
 
             Entity corpse = api.World.ClassRegistry.CreateEntity(
-                api.World.GetEntityType(new AssetLocation(Constants.MOD_ID, "playercorpse"))
+                api.World.GetEntityType(new AssetLocation(ConstantsCore.ModId, "playercorpse"))
             );
 
             int quantitySlots = 0;

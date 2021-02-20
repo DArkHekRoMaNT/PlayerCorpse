@@ -72,7 +72,7 @@ namespace PlayerCorpse
                     }
                 }
 
-                corpse.ServerPos.SetPos(entityPlayer.ServerPos.XYZ.AddCopy(0, 2, 0));
+                corpse.ServerPos.SetPos(entityPlayer.ServerPos.XYZ.AddCopy(0, 1, 0));
                 corpse.Pos.SetFrom(corpse.ServerPos);
                 corpse.World = api.World;
 
@@ -95,6 +95,10 @@ namespace PlayerCorpse
                     if (Config.Current.CreateCorpse.Val)
                     {
                         api.World.SpawnEntity(corpse);
+                    }
+                    else
+                    {
+                        (corpse as EntityPlayerCorpse).inventory.DropAll(corpse.Pos.XYZ);
                     }
 
                     if (Config.Current.MaxDeathContentSavedPerPlayer.Val > 0)

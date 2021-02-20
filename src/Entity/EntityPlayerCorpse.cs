@@ -5,6 +5,7 @@ using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
+using Vintagestory.API.Server;
 
 namespace PlayerCorpse
 {
@@ -58,16 +59,23 @@ namespace PlayerCorpse
         {
             IPlayer byPlayer = World.PlayerByUid((byEntity as EntityPlayer).PlayerUID);
             if (byPlayer == null) return;
+            if (byPlayer.PlayerUID != WatchedAttributes.GetString("ownerUID") &&
+                byPlayer.WorldData.CurrentGameMode != EnumGameMode.Creative)
+            {
+                (byPlayer as IServerPlayer)?.SendIngameError("not-corpse-owner");
+                base.OnInteract(byEntity, itemslot, hitPosition, mode);
+                return;
+            }
 
             if (Api.Side == EnumAppSide.Server)
             {
                 if (inventory == null || inventory.Count == 0) Die();
-                else if (secondsPassed == null) { secondsPassed = 0; }
+                else if (secondsPassed == null)
+                {
+                    secondsPassed = 0;
+                }
                 else if (secondsPassed > 3)
                 {
-                    if (byPlayer.PlayerUID != WatchedAttributes.GetString("ownerUID") &&
-                        byPlayer.WorldData.CurrentGameMode != EnumGameMode.Creative) return;
-
                     foreach (var slot in inventory)
                     {
                         if (slot.Empty) continue;
@@ -124,8 +132,11 @@ namespace PlayerCorpse
         }
         public override void Die(EnumDespawnReason reason = EnumDespawnReason.Death, DamageSource damageSourceForDeath = null)
         {
-            if (reason == EnumDespawnReason.Death)
-                inventory?.DropAll(SidedPos.XYZ.AddCopy(0, 1, 0));
+            if (reason == EnumDespawnReason.Death && inventory != null)
+            {
+                inventory.Api = Api; //fix strange null
+                inventory.DropAll(SidedPos.XYZ.AddCopy(0, 1, 0));
+            }
             base.Die(reason, damageSourceForDeath);
         }
         public override void ToBytes(BinaryWriter writer, bool forClient)
@@ -165,6 +176,11 @@ namespace PlayerCorpse
                     MouseButton = EnumMouseButton.Right
                 }
             };
+        }
+
+        public override void OnHurt(DamageSource dmgSource, float damage)
+        {
+            base.OnHurt(dmgSource, damage);
         }
     }
 }

@@ -79,17 +79,11 @@ namespace PlayerCorpse
                 {
                     if (Config.Current.CreateWaypoint.Val == "always")
                     {
-                        api.Logger.ModDebug(string.Format(
-                            "Create waypoint: PlayerEntity at {0} ({1}) and Corpse at {2} ({3})",
-                            entity.Pos.XYZ, entity.SidedPos.XYZ,
-                            corpse.Pos.XYZ, corpse.SidedPos.XYZ
-                        ));
-
                         (player as IServerPlayer).SendMessageAsClient(string.Format(
 
                             "/waypoint addati {0} ={1} ={2} ={3} {4} {5} Death: {6}",
                             Config.Current.WaypointIcon.Val,
-                            entity.SidedPos.X, entity.SidedPos.Y, entity.SidedPos.Z,
+                            (int)entity.SidedPos.X, (int)entity.SidedPos.Y, (int)entity.SidedPos.Z,
                             Config.Current.PinWaypoint.Val,
                             Config.Current.WaypointColor.Val,
                             DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")

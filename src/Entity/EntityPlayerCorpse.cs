@@ -11,7 +11,6 @@ namespace PlayerCorpse
 {
     public class EntityPlayerCorpse : EntityAgent
     {
-        Random Rand { get { return World.Rand; } }
         public InventoryGeneric inventory;
 
         private long lastInteractMs;
@@ -22,7 +21,7 @@ namespace PlayerCorpse
         }
 
         private long startms;
-        public float? secondsPassed
+        public float? SecondsPassed
         {
             get { return startms == 0 ? null : (World.ElapsedMilliseconds - (long?)startms) / 1000f; }
             set { startms = value == null ? 0 : World.ElapsedMilliseconds + (long)(value * 1000); }
@@ -52,7 +51,7 @@ namespace PlayerCorpse
         {
             base.OnGameTick(dt);
 
-            if (LastInteractPassedMs > 300) secondsPassed = null;
+            if (LastInteractPassedMs > 300) SecondsPassed = null;
         }
 
         public override void OnInteract(EntityAgent byEntity, ItemSlot itemslot, Vec3d hitPosition, EnumInteractMode mode)
@@ -70,11 +69,11 @@ namespace PlayerCorpse
             if (Api.Side == EnumAppSide.Server)
             {
                 if (inventory == null || inventory.Count == 0) Die();
-                else if (secondsPassed == null)
+                else if (SecondsPassed == null)
                 {
-                    secondsPassed = 0;
+                    SecondsPassed = 0;
                 }
-                else if (secondsPassed > 3)
+                else if (SecondsPassed > 3)
                 {
                     foreach (var slot in inventory)
                     {
@@ -93,7 +92,7 @@ namespace PlayerCorpse
                 {
                     Vec3f vel = byPlayer.Entity.SidedPos.GetViewVector();
                     vel.Negate();
-                    vel.Mul((float)secondsPassed * 0.1f + 1);
+                    vel.Mul((float)SecondsPassed * 0.1f + 1);
 
                     AdvancedParticleProperties props = new AdvancedParticleProperties()
                     {

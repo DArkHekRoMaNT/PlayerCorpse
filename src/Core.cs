@@ -14,11 +14,9 @@ namespace PlayerCorpse
 {
     public class Core : ModSystem
     {
-        ICoreAPI api;
         public override void Start(ICoreAPI api)
         {
             base.Start(api);
-            this.api = api;
 
             Config.Current = api.LoadOrCreateConfig<Config>(ConstantsCore.ModId + ".json");
             if (Config.Current.CreateWaypoint.Val == "auto")
@@ -42,6 +40,8 @@ namespace PlayerCorpse
                         player.SendMessage(returnthings_help);
                         return;
                     }
+
+                    api.Logger.ModDebug(string.Join(", ", api.World.AllPlayers.Select(p => p.PlayerName).ToArray()));
 
                     IPlayer fromPlayer = api.World.AllPlayers.FirstOrDefault(p => p.PlayerName.ToLower() == args[0].ToLower());
                     if (fromPlayer == null)

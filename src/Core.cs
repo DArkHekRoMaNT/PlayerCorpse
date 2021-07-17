@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using SharedUtils;
 using SharedUtils.Extensions;
+using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
@@ -14,10 +15,10 @@ namespace PlayerCorpse
 {
     public class Core : ModSystem
     {
+        public HudOverlayRenderer HudOverlayRenderer { get; private set; } // Interact ring
+
         public override void Start(ICoreAPI api)
         {
-            base.Start(api);
-
             Config.Current = api.LoadOrCreateConfig<Config>(ConstantsCore.ModId + ".json");
             if (Config.Current.CreateWaypoint.Val == "auto")
             {
@@ -26,10 +27,14 @@ namespace PlayerCorpse
             api.RegisterEntityBehaviorClass("playercorpseondeath", typeof(EntityBehaviorPlayerCorpseOnDeath));
             api.RegisterEntity("EntityPlayerCorpse", typeof(EntityPlayerCorpse));
         }
+
+        public override void StartClientSide(ICoreClientAPI api)
+        {
+            HudOverlayRenderer = new HudOverlayRenderer(api);
+        }
+
         public override void StartServerSide(ICoreServerAPI api)
         {
-            base.StartServerSide(api);
-
             string returnthings_help = "/returnthings [from player] [to player] [index] or /returnthings [from player] list";
             api.RegisterCommand("returnthings",
                 ConstantsCore.ModPrefix + "Returns things losing on last death", returnthings_help,
@@ -107,7 +112,7 @@ namespace PlayerCorpse
             );
         }
 
-        internal static void SaveDeathContent(InventoryGeneric inventory, IPlayer player)
+        internal void SaveDeathContent(InventoryGeneric inventory, IPlayer player)
         {
             ICoreAPI api = player.Entity?.Api;
             if (api == null) throw new NullReferenceException("player.Entity.api is null");
@@ -127,7 +132,7 @@ namespace PlayerCorpse
             File.WriteAllBytes($"{datapath}/{name}", tree.ToBytes());
         }
 
-        internal static InventoryGeneric LoadLastDeathContent(IPlayer player, int offset = 0)
+        internal InventoryGeneric LoadLastDeathContent(IPlayer player, int offset = 0)
         {
             ICoreAPI api = player.Entity?.Api;
             if (api == null) throw new NullReferenceException("player.Entity.api is null");

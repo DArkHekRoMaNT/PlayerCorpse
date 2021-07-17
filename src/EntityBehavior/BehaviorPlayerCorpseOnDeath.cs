@@ -10,7 +10,12 @@ namespace PlayerCorpse
 {
     public class EntityBehaviorPlayerCorpseOnDeath : EntityBehavior
     {
-        public EntityBehaviorPlayerCorpseOnDeath(Entity entity) : base(entity) { }
+        public Core Core { get; }
+
+        public EntityBehaviorPlayerCorpseOnDeath(Entity entity) : base(entity)
+        {
+            Core = entity.Api.ModLoader.GetModSystem<Core>();
+        }
         public override string PropertyName() { return "playercorpseondeath"; }
         public override void OnEntityDeath(DamageSource damageSourceForDeath)
         {
@@ -75,7 +80,7 @@ namespace PlayerCorpse
                 corpse.Pos.SetFrom(corpse.ServerPos);
                 corpse.World = api.World;
 
-                if (!(corpse as EntityPlayerCorpse).inventory.IsEmpty)
+                if (!(corpse as EntityPlayerCorpse).inventory.Empty)
                 {
                     if (Config.Current.CreateWaypoint.Val == "always")
                     {

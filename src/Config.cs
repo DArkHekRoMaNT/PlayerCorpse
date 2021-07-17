@@ -13,8 +13,8 @@ namespace PlayerCorpse
             private T val;
             public T Val
             {
-                get => (val != null ? val : val = Default);
-                set => val = (value != null ? value : Default);
+                get => val != null ? val : val = Default;
+                set => val = value != null ? value : Default;
             }
             public Part(T Default, string Comment = null)
             {

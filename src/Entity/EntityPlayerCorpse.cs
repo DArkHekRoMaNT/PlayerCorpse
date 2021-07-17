@@ -1,8 +1,9 @@
-using System;
 using System.IO;
 using SharedUtils;
+using SharedUtils.Extensions;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
+using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
@@ -11,8 +12,17 @@ namespace PlayerCorpse
 {
     public class EntityPlayerCorpse : EntityAgent
     {
+        public Core Core { get; private set; }
+        public override void Initialize(EntityProperties properties, ICoreAPI api, long InChunkIndex3d)
+        {
+            base.Initialize(properties, api, InChunkIndex3d);
+            Core = Api.ModLoader.GetModSystem<Core>();
+        }
+
+        // The corpse inventory
         public InventoryGeneric inventory;
 
+        // How many milliseconds have passed since the last interaction check
         private long lastInteractMs;
         public long LastInteractPassedMs
         {
@@ -20,13 +30,12 @@ namespace PlayerCorpse
             set { lastInteractMs = value; }
         }
 
-        private long startms;
-        public float? SecondsPassed
-        {
-            get { return startms == 0 ? null : (World.ElapsedMilliseconds - (long?)startms) / 1000f; }
-            set { startms = value == null ? 0 : World.ElapsedMilliseconds + (long)(value * 1000); }
-        }
+        // How many seconds have passed since the interaction began
+        public float SecondsPassed { get; set; }
+        public float requiredSeconds = 3;
 
+
+        // Called when after the got loaded from the savegame (not called during spawn)
         public override void OnEntityLoaded()
         {
             base.OnEntityLoaded();
@@ -38,6 +47,8 @@ namespace PlayerCorpse
                 }
             }
         }
+
+
 
         public override bool ShouldReceiveDamage(DamageSource damageSource, float damage)
         {
@@ -51,7 +62,22 @@ namespace PlayerCorpse
         {
             base.OnGameTick(dt);
 
-            if (LastInteractPassedMs > 300) SecondsPassed = null;
+            if (LastInteractPassedMs > 300)
+            {
+                SecondsPassed = 0;
+                if (Api.Side == EnumAppSide.Client)
+                {
+                    Core.HudOverlayRenderer.CircleVisible = false;
+                }
+            }
+            else
+            {
+                SecondsPassed += dt;
+                if (Api.Side == EnumAppSide.Client)
+                {
+                    Core.HudOverlayRenderer.CircleProgress = SecondsPassed / requiredSeconds;
+                }
+            }
         }
 
         public override void OnInteract(EntityAgent byEntity, ItemSlot itemslot, Vec3d hitPosition, EnumInteractMode mode)
@@ -69,11 +95,7 @@ namespace PlayerCorpse
             if (Api.Side == EnumAppSide.Server)
             {
                 if (inventory == null || inventory.Count == 0) Die();
-                else if (SecondsPassed == null)
-                {
-                    SecondsPassed = 0;
-                }
-                else if (SecondsPassed > 3)
+                else if (SecondsPassed > requiredSeconds)
                 {
                     foreach (var slot in inventory)
                     {
@@ -88,56 +110,33 @@ namespace PlayerCorpse
                     }
                     Die();
                 }
-                else
-                {
-                    Vec3f vel = byPlayer.Entity.SidedPos.GetViewVector();
-                    vel.Negate();
-                    vel.Mul((float)SecondsPassed * 0.1f + 1);
-
-                    AdvancedParticleProperties props = new AdvancedParticleProperties()
-                    {
-                        HsvaColor = new NatFloat[] {
-                            NatFloat.createUniform(30, 20),
-                            NatFloat.createUniform(255, 50),
-                            NatFloat.createUniform(255, 50),
-                            NatFloat.createUniform(255, 0)
-                        },
-
-                        basePos = SidedPos.XYZ,
-                        PosOffset = new NatFloat[] {
-                            NatFloat.createUniform(-0.5f, 0),
-                            NatFloat.createUniform(0, 0),
-                            NatFloat.createUniform(-0.1f, 0)
-                        },
-                        Velocity = new NatFloat[] {
-                            NatFloat.createUniform(vel.X, 0.5f),
-                            NatFloat.createUniform(vel.Y, 0.1f),
-                            NatFloat.createUniform(vel.Z, 0.5f)
-                        },
-                        GravityEffect = NatFloat.Zero,
-
-                        Quantity = NatFloat.createUniform(10, 5),
-                        LifeLength = NatFloat.createUniform(1, 0.9f),
-                        Size = NatFloat.createUniform(0.05f, 0.04f),
-
-                        ParticleModel = EnumParticleModel.Quad
-                    };
-
-                    Api.World.SpawnParticles(props);
-                }
             }
 
             LastInteractPassedMs = World.ElapsedMilliseconds;
         }
+
         public override void Die(EnumDespawnReason reason = EnumDespawnReason.Death, DamageSource damageSourceForDeath = null)
         {
             if (reason == EnumDespawnReason.Death && inventory != null)
             {
-                inventory.Api = Api; //fix strange null
+                inventory.Api = Api; // fix strange null
                 inventory.DropAll(SidedPos.XYZ.AddCopy(0, 1, 0));
             }
+
             base.Die(reason, damageSourceForDeath);
         }
+
+        public override void OnEntityDespawn(EntityDespawnReason despawn)
+        {
+            base.OnEntityDespawn(despawn);
+
+            if (Api.Side == EnumAppSide.Client)
+            {
+                Core.HudOverlayRenderer.CircleVisible = false;
+            }
+        }
+
+        // Serializes the slots contents to be stored in the SaveGame
         public override void ToBytes(BinaryWriter writer, bool forClient)
         {
             base.ToBytes(writer, forClient);
@@ -148,6 +147,8 @@ namespace PlayerCorpse
                 inventory.ToTreeAttributes(WatchedAttributes);
             }
         }
+
+        // Loads the entity from a stored byte array from the SaveGame
         public override void FromBytes(BinaryReader reader, bool forClient)
         {
             base.FromBytes(reader, forClient);
@@ -155,18 +156,27 @@ namespace PlayerCorpse
             if (WatchedAttributes != null)
             {
                 string inventoryID = WatchedAttributes.GetString("invid");
-                int quantitySlots = WatchedAttributes.GetInt("qslots");
 
-                inventory = new InventoryGeneric(quantitySlots, inventoryID, Api);
+                inventory = new InventoryGeneric(0, inventoryID, Api);
                 inventory.FromTreeAttributes(WatchedAttributes);
             }
         }
 
+        // Get the corpse name
         public override string GetName()
         {
-            return Lang.Get("{0}'s corpse", World.PlayerByUid(WatchedAttributes.GetString("ownerUID"))?.PlayerName);
+            string owner = World.PlayerByUid(WatchedAttributes.GetString("ownerUID"))?.PlayerName;
+
+            // DEBUG: Strange corpses without owner
+            if (string.IsNullOrEmpty(owner))
+            {
+                Api.Logger.ModDebug("Strange corpse on {0}, ownerUID='{1}'", Pos, WatchedAttributes.GetString("ownerUID"));
+            }
+
+            return Lang.Get("{0}'s corpse", owner);
         }
 
+        // Called when a player looks at the entity with interaction help enabled
         public override WorldInteraction[] GetInteractionHelp(IClientWorldAccessor world, EntitySelection es, IClientPlayer player)
         {
             return new WorldInteraction[] {
@@ -175,11 +185,6 @@ namespace PlayerCorpse
                     MouseButton = EnumMouseButton.Right
                 }
             };
-        }
-
-        public override void OnHurt(DamageSource dmgSource, float damage)
-        {
-            base.OnHurt(dmgSource, damage);
         }
     }
 }

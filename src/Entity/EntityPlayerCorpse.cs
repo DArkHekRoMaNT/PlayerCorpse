@@ -82,12 +82,13 @@ namespace PlayerCorpse
 
         public override void OnInteract(EntityAgent byEntity, ItemSlot itemslot, Vec3d hitPosition, EnumInteractMode mode)
         {
-            IPlayer byPlayer = World.PlayerByUid((byEntity as EntityPlayer).PlayerUID);
+            IPlayer byPlayer = World.PlayerByUid((byEntity as EntityPlayer)?.PlayerUID);
             if (byPlayer == null) return;
             if (byPlayer.PlayerUID != WatchedAttributes.GetString("ownerUID") &&
                 byPlayer.WorldData.CurrentGameMode != EnumGameMode.Creative)
             {
-                (byPlayer as IServerPlayer)?.SendIngameError("not-corpse-owner");
+                //(byPlayer as IServerPlayer)?.SendIngameError("not-corpse-owner");
+                (byPlayer as IClientPlayer)?.ShowChatNotification(Lang.Get("game:ingameerror-not-corpse-owner"));
                 base.OnInteract(byEntity, itemslot, hitPosition, mode);
                 return;
             }
@@ -165,15 +166,7 @@ namespace PlayerCorpse
         // Get the corpse name
         public override string GetName()
         {
-            string owner = World.PlayerByUid(WatchedAttributes.GetString("ownerUID"))?.PlayerName;
-
-            // DEBUG: Strange corpses without owner
-            if (string.IsNullOrEmpty(owner))
-            {
-                Api.Logger.ModDebug("Strange corpse on {0}, ownerUID='{1}'", Pos, WatchedAttributes.GetString("ownerUID"));
-            }
-
-            return Lang.Get("{0}'s corpse", owner);
+            return Lang.Get("{0}'s corpse", WatchedAttributes.GetString("ownerName"));
         }
 
         // Called when a player looks at the entity with interaction help enabled

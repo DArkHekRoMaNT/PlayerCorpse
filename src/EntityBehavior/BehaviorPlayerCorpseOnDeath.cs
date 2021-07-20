@@ -42,6 +42,7 @@ namespace PlayerCorpse
             if (quantitySlots != 0)
             {
                 (corpse as EntityPlayerCorpse).WatchedAttributes.SetString("ownerUID", player.PlayerUID);
+                (corpse as EntityPlayerCorpse).WatchedAttributes.SetString("ownerName", player.PlayerName);
                 (corpse as EntityPlayerCorpse).inventory = new InventoryGeneric(quantitySlots, "playercorpse-" + player.PlayerUID, api);
 
                 int lastSlotId = 0;

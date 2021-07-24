@@ -100,6 +100,7 @@ namespace PlayerCorpse
                     if (Config.Current.CreateCorpse.Val)
                     {
                         api.World.SpawnEntity(corpse);
+                        api.Logger.ModDebug("Created {0} at {1}", corpse.GetName(), corpse.SidedPos.XYZ - api.World.DefaultSpawnPosition.XYZ);
                     }
                     else
                     {

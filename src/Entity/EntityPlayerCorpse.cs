@@ -6,7 +6,6 @@ using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
-using Vintagestory.API.Server;
 
 namespace PlayerCorpse
 {
@@ -46,6 +45,9 @@ namespace PlayerCorpse
                     slot.Itemstack?.ResolveBlockOrItem(World);
                 }
             }
+
+            // For find disappeared corpses
+            Api.Logger.ModDebug("Loaded {0} at {1}", GetName(), SidedPos.XYZ - Api.World.DefaultSpawnPosition.XYZ);
         }
 
 

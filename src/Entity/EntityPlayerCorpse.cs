@@ -45,9 +45,6 @@ namespace PlayerCorpse
                     slot.Itemstack?.ResolveBlockOrItem(World);
                 }
             }
-
-            // For find disappeared corpses
-            Api.Logger.ModDebug("Loaded {0} at {1}", GetName(), SidedPos.XYZ - Api.World.DefaultSpawnPosition.XYZ);
         }
 
 

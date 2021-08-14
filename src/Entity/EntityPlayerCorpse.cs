@@ -66,11 +66,11 @@ namespace PlayerCorpse
 
             if (LastInteractPassedMs > 300)
             {
-                SecondsPassed = 0;
-                if (Api.Side == EnumAppSide.Client)
+                if (SecondsPassed != 0 && Api.Side == EnumAppSide.Client)
                 {
                     Core.HudOverlayRenderer.CircleVisible = false;
                 }
+                SecondsPassed = 0;
             }
             else
             {

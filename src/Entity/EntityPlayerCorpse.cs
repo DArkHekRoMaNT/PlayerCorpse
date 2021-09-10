@@ -108,6 +108,11 @@ namespace PlayerCorpse
                         slot.Itemstack = null;
                         slot.MarkDirty();
                     }
+                    Api.Logger.ModNotification("{0} at {1} can be collected by {2}", GetName(), SidedPos.XYZ.RelativePos(Api), (byEntity as EntityPlayer).Player.PlayerName);
+                    if (Config.Current.DebugMode.Val)
+                    {
+                        Api.SendMessageAll(string.Format("{0} at {1} can be collected by {2}", GetName(), SidedPos.XYZ.RelativePos(Api), (byEntity as EntityPlayer).Player.PlayerName));
+                    }
                     Die();
                 }
             }
@@ -121,6 +126,12 @@ namespace PlayerCorpse
             {
                 inventory.Api = Api; // fix strange null
                 inventory.DropAll(SidedPos.XYZ.AddCopy(0, 1, 0));
+            }
+
+            Api.Logger.ModNotification("{0} at {1} was destroyed", GetName(), SidedPos.XYZ.RelativePos(Api));
+            if (Config.Current.DebugMode.Val)
+            {
+                Api.SendMessageAll(string.Format("{0} at {1} was destroyed", GetName(), SidedPos.XYZ.RelativePos(Api)));
             }
 
             base.Die(reason, damageSourceForDeath);

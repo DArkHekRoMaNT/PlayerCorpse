@@ -54,5 +54,6 @@ namespace PlayerCorpse
         public Part<string> WaypointIcon { get; set; } = new Part<string>("bee", "[circle, bee, cave, home, ladder, pick, rocks, ruins, spiral, star1, star2, trader, vessel]");
         public Part<string> WaypointColor { get; set; } = new Part<string>("crimson", "https://www.99colors.net/dot-net-colors");
         public Part<bool> PinWaypoint { get; set; } = new Part<bool>(true, "[true, false]");
+        public Part<bool> DebugMode { get; set; } = new Part<bool>(false, "[true, false]");
     }
 }

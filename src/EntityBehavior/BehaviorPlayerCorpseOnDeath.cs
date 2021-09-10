@@ -100,11 +100,10 @@ namespace PlayerCorpse
                     if (Config.Current.CreateCorpse.Val)
                     {
                         api.World.SpawnEntity(corpse);
-                        api.Logger.ModNotification("Created {0} at {1}", corpse.GetName(), corpse.SidedPos.XYZ.RelativePos(api));
-                        if (Config.Current.DebugMode.Val)
-                        {
-                            api.SendMessageAll(string.Format("Created {0} at {1}", corpse.GetName(), corpse.SidedPos.XYZ.RelativePos(api)));
-                        }
+
+                        string log = string.Format("Created {0} at {1}, id {2}", corpse.GetName(), corpse.SidedPos.XYZ.RelativePos(api), corpse.EntityId);
+                        api.Logger.ModNotification(log);
+                        if (Config.Current.DebugMode.Val) api.SendMessageAll(log);
                     }
                     else
                     {

@@ -89,24 +89,26 @@ namespace PlayerCorpse
                     }
 
                     int offset = args.Length > 2 ? args[2].ToInt(-1) : 0;
-                    if (offset == -1 || files.Length <= offset)
+                    if (offset >= 0 || files.Length <= offset)
                     {
                         player.SendMessage(Lang.Get("Index {0} not found", args.Length > 2 ? args[2] : offset.ToString()));
                         return;
                     }
 
-                    InventoryGeneric inventory = LoadLastDeathContent(player, offset);
+                    InventoryGeneric inventory = LoadLastDeathContent(toPlayer, offset);
                     foreach (var slot in inventory)
                     {
                         if (slot.Empty) continue;
 
-                        if (!player.InventoryManager.TryGiveItemstack(slot.Itemstack))
+                        if (!toPlayer.InventoryManager.TryGiveItemstack(slot.Itemstack))
                         {
-                            api.World.SpawnItemEntity(slot.Itemstack, player.Entity.ServerPos.XYZ.AddCopy(0, 1, 0));
+                            api.World.SpawnItemEntity(slot.Itemstack, toPlayer.Entity.ServerPos.XYZ.AddCopy(0, 1, 0));
                         }
                         slot.Itemstack = null;
                         slot.MarkDirty();
                     }
+
+                    player.SendMessage(Lang.Get("Returned things from {0} to {1} with index {2}", fromPlayer.PlayerName, toPlayer.PlayerName, offset));
                 },
                 Config.Current.NeedPrivilegeForReturnThings.Val
             );

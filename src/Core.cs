@@ -38,31 +38,30 @@ namespace PlayerCorpse
             string returnthings_help = "/returnthings [from player] [to player] [index] or /returnthings [from player] list";
             api.RegisterCommand("returnthings",
                 ConstantsCore.ModPrefix + "Returns things losing on last death", returnthings_help,
-                (IServerPlayer player, int groupId, CmdArgs args) =>
+                (IServerPlayer byPlayer, int groupId, CmdArgs args) =>
                 {
                     if (args.Length < 2)
                     {
-                        player.SendMessage(returnthings_help);
+                        byPlayer.SendMessage(returnthings_help);
                         return;
                     }
 
-                    api.Logger.ModDebug(string.Join(", ", api.World.AllPlayers.Select(p => p.PlayerName).ToArray()));
 
                     IPlayer fromPlayer = api.World.AllPlayers.FirstOrDefault(p => p.PlayerName.ToLower() == args[0].ToLower());
                     if (fromPlayer == null)
                     {
-                        player.SendMessage(Lang.Get("Player {0} not found", args[0]));
+                        byPlayer.SendMessage(Lang.Get("Player {0} not found", args[0]));
                         return;
                     }
 
-                    string datapath = api.GetOrCreateDataPath($"ModData/{api.GetWorldId()}/{ConstantsCore.ModId}/{player.PlayerUID}");
+                    string datapath = api.GetOrCreateDataPath($"ModData/{api.GetWorldId()}/{ConstantsCore.ModId}/{fromPlayer.PlayerUID}");
                     string[] files = Directory.GetFiles(datapath).OrderByDescending(f => new FileInfo(f).Name).ToArray();
 
                     if (args[1] == "list")
                     {
                         if (files.Length == 0)
                         {
-                            player.SendMessage(Lang.Get("No data saved"));
+                            byPlayer.SendMessage(Lang.Get("No data saved"));
                             return;
                         }
 
@@ -71,31 +70,31 @@ namespace PlayerCorpse
                         {
                             str.AppendLine($"{i}. {Path.GetFileName(files[i])}");
                         }
-                        player.SendMessage(str.ToString());
+                        byPlayer.SendMessage(str.ToString());
                         return;
                     }
 
                     IPlayer toPlayer = api.World.AllPlayers.FirstOrDefault(p => p.PlayerName.ToLower() == args[1].ToLower());
                     if (toPlayer == null)
                     {
-                        player.SendMessage(Lang.Get("Player {0} not found", args[1]));
+                        byPlayer.SendMessage(Lang.Get("Player {0} not found", args[1]));
                         return;
                     }
 
                     if (!api.World.AllOnlinePlayers.Contains(toPlayer) || toPlayer.Entity == null)
                     {
-                        player.SendMessage(Lang.Get("Player {0} is offline or not fully loaded.", args[1]));
+                        byPlayer.SendMessage(Lang.Get("Player {0} is offline or not fully loaded.", args[1]));
                         return;
                     }
 
                     int offset = args.Length > 2 ? args[2].ToInt(-1) : 0;
                     if (offset >= 0 || files.Length <= offset)
                     {
-                        player.SendMessage(Lang.Get("Index {0} not found", args.Length > 2 ? args[2] : offset.ToString()));
+                        byPlayer.SendMessage(Lang.Get("Index {0} not found", args.Length > 2 ? args[2] : offset.ToString()));
                         return;
                     }
 
-                    InventoryGeneric inventory = LoadLastDeathContent(toPlayer, offset);
+                    InventoryGeneric inventory = LoadLastDeathContent(fromPlayer, offset);
                     foreach (var slot in inventory)
                     {
                         if (slot.Empty) continue;
@@ -108,7 +107,7 @@ namespace PlayerCorpse
                         slot.MarkDirty();
                     }
 
-                    player.SendMessage(Lang.Get("Returned things from {0} to {1} with index {2}", fromPlayer.PlayerName, toPlayer.PlayerName, offset));
+                    byPlayer.SendMessage(Lang.Get("Returned things from {0} to {1} with index {2}", fromPlayer.PlayerName, toPlayer.PlayerName, offset));
                 },
                 Config.Current.NeedPrivilegeForReturnThings.Val
             );

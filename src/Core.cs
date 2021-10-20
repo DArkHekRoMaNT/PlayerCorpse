@@ -88,7 +88,7 @@ namespace PlayerCorpse
                     }
 
                     int offset = args.Length > 2 ? args[2].ToInt(-1) : 0;
-                    if (offset >= 0 || files.Length <= offset)
+                    if (offset == -1 || files.Length <= offset)
                     {
                         byPlayer.SendMessage(Lang.Get("Index {0} not found", args.Length > 2 ? args[2] : offset.ToString()));
                         return;

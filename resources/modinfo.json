@@ -2,9 +2,9 @@
   "type": "code",
   "modid": "playercorpse",
   "name": "Player Corpse",
-  "author": "DArkHekRoMaNT",
+  "authors": ["DArkHekRoMaNT"],
   "version": "1.1.7",
-  "dependency": {
+  "dependencies": {
     "game": "1.15.0"
   },
   "website": "https://github.com/darkhekromant/PlayerCorpse"

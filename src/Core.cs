@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using SharedUtils;
 using SharedUtils.Extensions;
+using SharedUtils.Gui;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
@@ -15,7 +16,7 @@ namespace PlayerCorpse
 {
     public class Core : ModSystem
     {
-        public HudOverlayRenderer HudOverlayRenderer { get; private set; } // Interact ring
+        public HudCircleRenderer HudOverlayRenderer { get; private set; } // Interact ring
 
         public override void Start(ICoreAPI api)
         {
@@ -30,7 +31,10 @@ namespace PlayerCorpse
 
         public override void StartClientSide(ICoreClientAPI api)
         {
-            HudOverlayRenderer = new HudOverlayRenderer(api);
+            HudOverlayRenderer = new HudCircleRenderer(api, new HudCircleSettings()
+            {
+                Color = 0xFF9500
+            });
         }
 
         public override void StartServerSide(ICoreServerAPI api)

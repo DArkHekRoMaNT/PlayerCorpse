@@ -6,6 +6,7 @@ using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
+using Vintagestory.API.Server;
 
 namespace PlayerCorpse
 {
@@ -18,10 +19,10 @@ namespace PlayerCorpse
             Core = Api.ModLoader.GetModSystem<Core>();
         }
 
-        // The corpse inventory
+        /// <summary> The corpse inventory </summary>
         public InventoryGeneric inventory;
 
-        // How many milliseconds have passed since the last interaction check
+        /// <summary> How many milliseconds have passed since the last interaction check </summary>
         private long lastInteractMs;
         public long LastInteractPassedMs
         {
@@ -29,12 +30,11 @@ namespace PlayerCorpse
             set { lastInteractMs = value; }
         }
 
-        // How many seconds have passed since the interaction began
+        /// <summary> How many seconds have passed since the interaction began </summary>
         public float SecondsPassed { get; set; }
         public float requiredSeconds = 3;
 
 
-        // Called when after the got loaded from the savegame (not called during spawn)
         public override void OnEntityLoaded()
         {
             base.OnEntityLoaded();
@@ -46,8 +46,6 @@ namespace PlayerCorpse
                 }
             }
         }
-
-
 
         public override bool ShouldReceiveDamage(DamageSource damageSource, float damage)
         {
@@ -86,8 +84,7 @@ namespace PlayerCorpse
             if (byPlayer.PlayerUID != WatchedAttributes.GetString("ownerUID") &&
                 byPlayer.WorldData.CurrentGameMode != EnumGameMode.Creative)
             {
-                //(byPlayer as IServerPlayer)?.SendIngameError("not-corpse-owner");
-                (byPlayer as IClientPlayer)?.ShowChatNotification(Lang.Get("game:ingameerror-not-corpse-owner"));
+                (byPlayer as IServerPlayer)?.SendIngameError("", Lang.Get("game:ingameerror-not-corpse-owner"));
                 base.OnInteract(byEntity, itemslot, hitPosition, mode);
                 return;
             }
@@ -145,7 +142,6 @@ namespace PlayerCorpse
             }
         }
 
-        // Serializes the slots contents to be stored in the SaveGame
         public override void ToBytes(BinaryWriter writer, bool forClient)
         {
             base.ToBytes(writer, forClient);
@@ -157,7 +153,6 @@ namespace PlayerCorpse
             }
         }
 
-        // Loads the entity from a stored byte array from the SaveGame
         public override void FromBytes(BinaryReader reader, bool forClient)
         {
             base.FromBytes(reader, forClient);
@@ -171,13 +166,12 @@ namespace PlayerCorpse
             }
         }
 
-        // Get the corpse name
+        /// <summary> Get the corpse name </summary>
         public override string GetName()
         {
             return Lang.Get("{0}'s corpse", WatchedAttributes.GetString("ownerName"));
         }
 
-        // Called when a player looks at the entity with interaction help enabled
         public override WorldInteraction[] GetInteractionHelp(IClientWorldAccessor world, EntitySelection es, IClientPlayer player)
         {
             return new WorldInteraction[] {

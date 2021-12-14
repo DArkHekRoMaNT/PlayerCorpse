@@ -1,5 +1,7 @@
 {
   "item-creature-playercorpse": "Player corpse",
   "blockhelp-collect": "Collect",
-  "game:ingameerror-not-corpse-owner": "This is not your corpse!"
+  "game:ingameerror-not-corpse-owner": "This is not your corpse!",
+  "corpse-free": "Free for all",
+  "corpse-created(date={0})": "Created {0}"
 }

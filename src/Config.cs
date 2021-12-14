@@ -55,5 +55,7 @@ namespace PlayerCorpse
         public Part<string> WaypointColor { get; set; } = new Part<string>("crimson", "https://www.99colors.net/dot-net-colors");
         public Part<bool> PinWaypoint { get; set; } = new Part<bool>(true, "[true, false]");
         public Part<bool> DebugMode { get; set; } = new Part<bool>(false, "[true, false]");
+        public Part<int> FreeCorpseAfterTime { get; set; } = new Part<int>(240, "[Any integer] (0 - always, below zero - never), makes corpses available to everyone after N in-game hours");
+        public Part<float> CorpseCollectionTime { get; set; } = new Part<float>(3, "[float], Corpse collection time in seconds");
     }
 }

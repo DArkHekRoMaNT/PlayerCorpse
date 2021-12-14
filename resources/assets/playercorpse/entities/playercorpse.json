@@ -1,8 +1,8 @@
 {
   "code": "playercorpse",
   "class": "EntityPlayerCorpse",
-  "habitat": "Land",
-  "hitboxSize": { "x": 1, "y": 0.3 },
+  "habitat": "land",
+  "hitboxSize": { "x": 0.9, "y": 0.3 },
   "client": {
     "renderer": "Shape",
     "shape": { "base": "game:block/bone/carcass/humanoid2" },

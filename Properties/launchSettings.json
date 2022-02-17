@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "Launch Client": {
+      "commandName": "Executable",
+      "executablePath": "%VINTAGE_STORY%\\$(RunGameVersion)\\Vintagestory.exe",
+      "commandLineArgs": "--addModPath $(ProjectDir)mods --addOrigin $(ProjectDir)assets",
+      "workingDirectory": "%VINTAGE_STORY%\\$(RunGameVersion)"
+    },
+    "Launch Client with Test World": {
+      "commandName": "Executable",
+      "executablePath": "%VINTAGE_STORY%\\$(RunGameVersion)\\Vintagestory.exe",
+      "commandLineArgs": "--playStyle \"preset-surviveandbuild\" --openWorld \"$(ProjectName) Test World\" --addModPath $(ProjectDir)mods --addOrigin $(ProjectDir)assets",
+      "workingDirectory": "%VINTAGE_STORY%\\$(RunGameVersion)"
+    }
+  }
+}

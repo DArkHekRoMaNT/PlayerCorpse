@@ -1,0 +1,7 @@
+{
+  "item-creature-playercorpse": "Corps du joueur",
+  "blockhelp-collect": "Récupérer",
+  "game:ingameerror-not-corpse-owner": "Ce n'est pas votre corps!",
+  "corpse-free": "Récupérable par n'importe qui",
+  "corpse-created(date={0})": "créé {0}"
+}

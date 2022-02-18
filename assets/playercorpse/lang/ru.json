@@ -1,7 +1,13 @@
 {
   "item-creature-playercorpse": "Труп игрока",
   "blockhelp-collect": "Подобрать",
+
   "game:ingameerror-not-corpse-owner": " Это не ваш труп!",
   "corpse-free": "Доступен для всех",
-  "corpse-created(date={0})": "Создан {0}"
+  "corpse-created(date={0})": "Создан {0}",
+
+  "item-corpsecompass": "Компас для трупов",
+  "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Использование",
+  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Помогает найти ваши трупы. Администраторы серверов также могут проверить точные координаты всех трупов в журнале server-main.txt (используйте с Shift)<br/><br/><b>Работает только для текущего столба чанков, по умолчаню это 32х256х32 блоков</b>",
+  "corpsecompass-corpses-not-found": "В этом столбе чанков ваши трупы не найдены"
 }

@@ -1,0 +1,16 @@
+﻿{
+  "enabled": true,
+  "ingredientPattern": "_B_,BBB,_B_",
+  "ingredients": {
+    "B": {
+      "type": "item",
+      "code": "game:bone"
+    }
+  },
+  "width": 3,
+  "height": 3,
+  "output": {
+    "type": "item",
+    "code": "corpsecompass"
+  }
+}

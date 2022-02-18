@@ -1,0 +1,52 @@
+{
+  "code": "corpsecompass",
+  "class": "ItemCorpseCompass",
+  "shape": { "base": "block/corpsecompass" },
+  "creativeinventory": {
+    "general": [ "*" ],
+    "tools": [ "*" ],
+    "playercorpse": [ "*" ]
+  },
+  "textures": {
+    "fat": { "base": "game:block/clay/ceramic" },
+    "bone": { "base": "game:block/bone" }
+  },
+  "fpHandTransform": {
+    "rotation": {
+      "x": 43,
+      "y": 108,
+      "z": -46
+    }
+  },
+  "groundTransform": {
+    "translation": {
+      "x": 0,
+      "y": 0.157,
+      "z": 0
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "scale": 1.5
+  },
+  "guiTransform": {
+    "translation": {
+      "x": 2,
+      "y": 19,
+      "z": 0
+    },
+    "rotation": {
+      "x": 90,
+      "y": 1,
+      "z": 0
+    },
+    "origin": {
+      "x": 0.5,
+      "y": 0.5,
+      "z": 0
+    },
+    "scale": 1.35
+  }
+}

@@ -57,5 +57,6 @@ namespace PlayerCorpse
         public Part<bool> DebugMode { get; set; } = new Part<bool>(false, "[true, false]");
         public Part<int> FreeCorpseAfterTime { get; set; } = new Part<int>(240, "[Any integer] (0 - always, below zero - never), makes corpses available to everyone after N in-game hours");
         public Part<float> CorpseCollectionTime { get; set; } = new Part<float>(3, "[float], Corpse collection time in seconds");
+        public Part<bool> CorpseCompassEnabled { get; set; } = new Part<bool>(true);
     }
 }

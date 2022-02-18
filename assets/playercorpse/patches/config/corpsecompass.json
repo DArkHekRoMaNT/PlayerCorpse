@@ -1,0 +1,12 @@
+[
+  {
+    "file": "recipes/grid/corpsecompass.json",
+    "op": "replace",
+    "path": "/enabled",
+    "value": "false",
+    "condition": {
+      "when": "playercorpse:CorpseCompassEnabled",
+      "isValue": "false"
+    }
+  }
+]

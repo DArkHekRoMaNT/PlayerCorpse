@@ -1,7 +1,15 @@
 {
   "item-creature-playercorpse": "Player corpse",
   "blockhelp-collect": "Collect",
+
   "game:ingameerror-not-corpse-owner": "This is not your corpse!",
   "corpse-free": "Free for all",
-  "corpse-created(date={0})": "Created {0}"
+  "corpse-created(date={0})": "Created {0}",
+
+  "game:tabname-playercorpse": "Player Corpse",
+
+  "item-corpsecompass": "Corpse Compass",
+  "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Usage",
+  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Helps to find your corpses. Server admins can also check the server-main.txt log for the exact coordinates of all corpses (uses with Sneak)<br/><br/><b>Only works for the current column of chunks, by default it is 32x256x32 blocks</b>",
+  "corpsecompass-corpses-not-found": "No your corpses found within this chunks column"
 }

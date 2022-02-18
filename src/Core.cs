@@ -25,8 +25,12 @@ namespace PlayerCorpse
             {
                 Config.Current.CreateWaypoint.Val = api.ModLoader.IsModEnabled("streamdc") ? "none" : "always";
             }
+
+            api.World.Config.SetBool(Mod.Info.ModID + ":CorpseCompassEnabled", Config.Current.CorpseCompassEnabled.Val);
+
             api.RegisterEntityBehaviorClass("playercorpseondeath", typeof(EntityBehaviorPlayerCorpseOnDeath));
             api.RegisterEntity("EntityPlayerCorpse", typeof(EntityPlayerCorpse));
+            api.RegisterItemClass("ItemCorpseCompass", typeof(ItemCorpseCompass));
         }
 
         public override void StartClientSide(ICoreClientAPI api)

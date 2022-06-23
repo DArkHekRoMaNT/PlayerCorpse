@@ -18,7 +18,6 @@ namespace PlayerCorpse
             AddVelocity = Vec3f.Zero,
             GravityEffect = 0,
             RandomVelocityChange = true,
-            Bouncy = false,
 
             MinQuantity = 5,
             AddQuantity = 5,

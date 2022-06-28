@@ -3,9 +3,9 @@
   "modid": "playercorpse",
   "name": "Player Corpse",
   "authors": [ "DArkHekRoMaNT" ],
-  "version": "1.3.2",
+  "version": "1.3.3",
   "dependencies": {
-    "game": "1.16.0"
+    "game": "1.17.0-pre.1"
   },
   "website": "https://github.com/darkhekromant/PlayerCorpse"
 }

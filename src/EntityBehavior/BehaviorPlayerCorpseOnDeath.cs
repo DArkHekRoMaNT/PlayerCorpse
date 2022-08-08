@@ -1,6 +1,4 @@
 using System;
-using SharedUtils;
-using SharedUtils.Extensions;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
@@ -18,8 +16,11 @@ namespace PlayerCorpse
         public override void OnEntityDeath(DamageSource damageSourceForDeath)
         {
             // Not a player or enabled save inventory after death
-            if (!(entity is EntityPlayer entityPlayer) ||
-                entityPlayer.Properties.Server?.Attributes?.GetBool("keepContents", false) == true)
+            EntityPlayer entityPlayer = entity as EntityPlayer;
+            if (entityPlayer == null ||
+                (entityPlayer.Properties.Server == null &&
+                entityPlayer.Properties.Server.Attributes == null &&
+                entityPlayer.Properties.Server.Attributes.GetBool("keepContents", false)))
             {
                 base.OnEntityDeath(damageSourceForDeath);
                 return;
@@ -40,7 +41,7 @@ namespace PlayerCorpse
             if (corpseInvQuantitySlots != 0)
             {
                 var corpseEntity = api.World.ClassRegistry.CreateEntity(
-                    api.World.GetEntityType(new AssetLocation(ConstantsCore.ModId, "playercorpse"))
+                    api.World.GetEntityType(new AssetLocation(Core.ModId, "playercorpse"))
                 ) as EntityPlayerCorpse;
 
                 corpseEntity.OwnerUID = player.PlayerUID;
@@ -56,7 +57,9 @@ namespace PlayerCorpse
                 {
                     // Skip armor if it does not drop after death
                     if (invClassName == GlobalConstants.characterInvClassName &&
-                        entityPlayer.Properties.Server?.Attributes?.GetBool("dropArmorOnDeath") != true)
+                        !(entityPlayer.Properties.Server == null &&
+                        entityPlayer.Properties.Server.Attributes == null &&
+                        entityPlayer.Properties.Server.Attributes.GetBool("dropArmorOnDeath")))
                     {
                         continue;
                     }
@@ -68,7 +71,8 @@ namespace PlayerCorpse
 
                         // Skip the player's clothing (not armor)
                         if (invClassName == GlobalConstants.characterInvClassName &&
-                            slot.Itemstack.ItemAttributes?["protectionModifiers"].Exists != true)
+                            slot.Itemstack.ItemAttributes != null &&
+                            !slot.Itemstack.ItemAttributes["protectionModifiers"].Exists)
                         {
                             continue;
                         }
@@ -89,8 +93,8 @@ namespace PlayerCorpse
                             }
                             catch (Exception e)
                             {
-                                api.Logger.ModWarning("Player's inventory still contains " + slot.Itemstack.Collectible.Code + "");
-                                api.Logger.ModError(e.Message);
+                                Core.ModLogger.Warning("Player's inventory still contains " + slot.Itemstack.Collectible.Code + "");
+                                Core.ModLogger.Error(e.Message);
                             }
                         }
                     }
@@ -130,7 +134,7 @@ namespace PlayerCorpse
                         api.World.SpawnEntity(corpseEntity);
 
                         string log = string.Format("Created {0} at {1}, id {2}", corpseEntity.GetName(), corpseEntity.SidedPos.XYZ.RelativePos(api), corpseEntity.EntityId);
-                        api.Logger.ModNotification(log);
+                        Core.ModLogger.Notification(log);
                         if (Config.Current.DebugMode.Val) api.SendMessageAll(log);
                     }
                     else
@@ -142,8 +146,8 @@ namespace PlayerCorpse
                     // Save content for /returnthings
                     if (Config.Current.MaxDeathContentSavedPerPlayer.Val > 0)
                     {
-                        var core = entity.Api.ModLoader.GetModSystem<Core>();
-                        core.SaveDeathContent(corpseEntity.Inventory, player);
+                        var dcm = api.ModLoader.GetModSystem<DeathContentManager>();
+                        dcm.SaveDeathContent(corpseEntity.Inventory, player);
                     }
                 }
             }

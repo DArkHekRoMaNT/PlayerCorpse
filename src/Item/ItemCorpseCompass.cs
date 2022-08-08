@@ -1,6 +1,4 @@
-﻿using SharedUtils;
-using SharedUtils.Extensions;
-using Vintagestory.API.Common;
+﻿using Vintagestory.API.Common;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
@@ -9,7 +7,7 @@ namespace PlayerCorpse
 {
     public class ItemCorpseCompass : Item
     {
-        SimpleParticleProperties particles = new SimpleParticleProperties()
+        readonly SimpleParticleProperties particles = new SimpleParticleProperties()
         {
             MinPos = Vec3d.Zero,
             AddPos = new Vec3d(.2, .2, .2),
@@ -53,7 +51,8 @@ namespace PlayerCorpse
                     var chunk = sapi.WorldManager.GetChunk(chunkX, i, chunkZ);
                     foreach (var entity in chunk.Entities)
                     {
-                        if (entity != null && entity is EntityPlayerCorpse corpseEntity)
+                        EntityPlayerCorpse corpseEntity = entity as EntityPlayerCorpse;
+                        if (corpseEntity != null)
                         {
                             if (corpseEntity.OwnerUID == (byEntity as EntityPlayer).PlayerUID)
                             {
@@ -63,8 +62,8 @@ namespace PlayerCorpse
 
                             if (byEntity.Controls.Sneak)
                             {
-                                string text = $"{corpseEntity.OwnerName}'s corpse found at {entity.SidedPos.XYZ}";
-                                api.Logger.ModNotification(text);
+                                string text = corpseEntity.OwnerName + "'s corpse found at " + entity.SidedPos.XYZ;
+                                Core.ModLogger.Notification(text);
                                 if (Config.Current.DebugMode.Val)
                                 {
                                     byEntity.SendMessage(text);
@@ -86,7 +85,7 @@ namespace PlayerCorpse
                 }
                 else
                 {
-                    byEntity.SendMessage(Lang.Get(ConstantsCore.ModId + ":corpsecompass-corpses-not-found"));
+                    byEntity.SendMessage(Lang.Get(Code.Domain + ":corpsecompass-corpses-not-found"));
                 }
             }
         }

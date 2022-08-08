@@ -1,7 +1,5 @@
 using System.IO;
 using System.Text;
-using SharedUtils;
-using SharedUtils.Extensions;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
@@ -21,30 +19,29 @@ namespace PlayerCorpse
             Core = Api.ModLoader.GetModSystem<Core>();
         }
 
-
         public InventoryGeneric Inventory { get; set; }
 
         public double CreationTime
         {
-            get => WatchedAttributes.GetDouble("creationTime", Api.World.Calendar.TotalHours);
+            get { return WatchedAttributes.GetDouble("creationTime", Api.World.Calendar.TotalHours); }
             set { WatchedAttributes.SetDouble("creationTime", value); }
         }
 
         public string CreationRealDatetime
         {
-            get => WatchedAttributes.GetString("creationRealDatetime", "no data");
+            get { return WatchedAttributes.GetString("creationRealDatetime", "no data"); }
             set { WatchedAttributes.SetString("creationRealDatetime", value); }
         }
 
         public string OwnerUID
         {
-            get => WatchedAttributes.GetString("ownerUID");
+            get { return WatchedAttributes.GetString("ownerUID"); }
             set { WatchedAttributes.SetString("ownerUID", value); }
         }
 
         public string OwnerName
         {
-            get => WatchedAttributes.GetString("ownerName");
+            get { return WatchedAttributes.GetString("ownerName"); }
             set { WatchedAttributes.SetString("ownerName", value); }
         }
 
@@ -84,7 +81,10 @@ namespace PlayerCorpse
             {
                 foreach (var slot in Inventory)
                 {
-                    slot.Itemstack?.ResolveBlockOrItem(World);
+                    if (slot.Itemstack != null)
+                    {
+                        slot.Itemstack.ResolveBlockOrItem(World);
+                    }
                 }
             }
         }
@@ -105,7 +105,7 @@ namespace PlayerCorpse
             {
                 if (SecondsPassed != 0 && Api.Side == EnumAppSide.Client)
                 {
-                    Core.HudOverlayRenderer.CircleVisible = false;
+                    Core.InteractRingRenderer.CircleVisible = false;
                 }
                 SecondsPassed = 0;
             }
@@ -114,14 +114,16 @@ namespace PlayerCorpse
                 SecondsPassed += dt;
                 if (Api.Side == EnumAppSide.Client)
                 {
-                    Core.HudOverlayRenderer.CircleProgress = SecondsPassed / Config.Current.CorpseCollectionTime.Val;
+                    Core.InteractRingRenderer.CircleProgress = SecondsPassed / Config.Current.CorpseCollectionTime.Val;
                 }
             }
         }
 
         public override void OnInteract(EntityAgent byEntity, ItemSlot itemslot, Vec3d hitPosition, EnumInteractMode mode)
         {
-            IPlayer byPlayer = World.PlayerByUid((byEntity as EntityPlayer)?.PlayerUID);
+            EntityPlayer entityPlayer = byEntity as EntityPlayer;
+            if (entityPlayer == null) return;
+            IPlayer byPlayer = World.PlayerByUid(entityPlayer.PlayerUID);
             if (byPlayer == null) return;
 
             // Check owner
@@ -129,7 +131,8 @@ namespace PlayerCorpse
                 byPlayer.WorldData.CurrentGameMode != EnumGameMode.Creative &&
                 !IsFree)
             {
-                (byPlayer as IServerPlayer)?.SendIngameError("", Lang.Get("game:ingameerror-not-corpse-owner"));
+                IServerPlayer sp = byPlayer as IServerPlayer;
+                if (sp != null) sp.SendIngameError("", Lang.Get("game:ingameerror-not-corpse-owner"));
                 base.OnInteract(byEntity, itemslot, hitPosition, mode);
                 return;
             }
@@ -153,7 +156,7 @@ namespace PlayerCorpse
                     }
 
                     string log = string.Format("{0} at {1} can be collected by {2}, id {3}", GetName(), SidedPos.XYZ.RelativePos(Api), (byEntity as EntityPlayer).Player.PlayerName, EntityId);
-                    Api.Logger.ModNotification(log);
+                    Core.ModLogger.Notification(log);
                     if (Config.Current.DebugMode.Val) Api.SendMessageAll(log);
 
                     Die();
@@ -172,7 +175,7 @@ namespace PlayerCorpse
             }
 
             string log = string.Format("{0} at {1} was destroyed, id {2}", GetName(), SidedPos.XYZ.RelativePos(Api), EntityId);
-            Api.Logger.ModNotification(log);
+            Core.ModLogger.Notification(log);
             if (Config.Current.DebugMode.Val) Api.SendMessageAll(log);
 
             base.Die(reason, damageSourceForDeath);
@@ -184,7 +187,7 @@ namespace PlayerCorpse
 
             if (Api.Side == EnumAppSide.Client)
             {
-                Core.HudOverlayRenderer.CircleVisible = false;
+                Core.InteractRingRenderer.CircleVisible = false;
             }
         }
 
@@ -223,11 +226,11 @@ namespace PlayerCorpse
             StringBuilder str = new StringBuilder();
 
             str.Append(base.GetInfoText());
-            str.AppendLine(Lang.Get(ConstantsCore.ModId + ":corpse-created(date={0})", CreationRealDatetime));
+            str.AppendLine(Lang.Get(Core.ModId + ":corpse-created(date={0})", CreationRealDatetime));
 
             if (IsFree)
             {
-                str.AppendLine(Lang.Get(ConstantsCore.ModId + ":corpse-free"));
+                str.AppendLine(Lang.Get(Core.ModId + ":corpse-free"));
             }
 
             return str.ToString();
@@ -237,7 +240,7 @@ namespace PlayerCorpse
         {
             return new WorldInteraction[] {
                 new WorldInteraction{
-                    ActionLangCode = ConstantsCore.ModId + ":blockhelp-collect",
+                    ActionLangCode = Core.ModId + ":blockhelp-collect",
                     MouseButton = EnumMouseButton.Right
                 }
             };

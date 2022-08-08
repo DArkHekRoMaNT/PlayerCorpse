@@ -72,7 +72,7 @@ namespace PlayerCorpse
             PinWaypoint = new Part<bool>(true, "[true, false]");
             DebugMode = new Part<bool>(false, "[true, false]");
             FreeCorpseAfterTime = new Part<int>(240, "[Any integer] (0 - always, below zero - never), makes corpses available to everyone after N in-game hours");
-            CorpseCollectionTime = new Part<float>(3, "[float], Corpse collection time in seconds");
+            CorpseCollectionTime = new Part<float>(1, "[float], Corpse collection time in seconds");
             CorpseCompassEnabled = new Part<bool>(true);
         }
     }

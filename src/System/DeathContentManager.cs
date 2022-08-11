@@ -16,7 +16,7 @@ namespace PlayerCorpse
             string path = api.GetOrCreateDataPath(localPath);
             string[] files = Directory.GetFiles(path).OrderByDescending(f => new FileInfo(f).Name).ToArray();
 
-            for (int i = files.Length - 1; i > Config.Current.MaxDeathContentSavedPerPlayer.Val - 2; i--)
+            for (int i = files.Length - 1; i > Config.Current.MaxDeathContentSavedPerPlayer.Value - 2; i--)
             {
                 File.Delete(files[i]);
             }
@@ -31,7 +31,7 @@ namespace PlayerCorpse
         public InventoryGeneric LoadLastDeathContent(IPlayer player, int offset = 0)
         {
             ICoreAPI api = player.Entity.Api;
-            if (Config.Current.MaxDeathContentSavedPerPlayer.Val <= offset)
+            if (Config.Current.MaxDeathContentSavedPerPlayer.Value <= offset)
                 throw new IndexOutOfRangeException("offset is too large or save data disabled");
 
             string localPath = "ModData" + api.GetWorldId() + "/" + Mod.Info.ModID + "/" + player.PlayerUID;

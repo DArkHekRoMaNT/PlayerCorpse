@@ -64,7 +64,7 @@ namespace PlayerCorpse
                             {
                                 string text = corpseEntity.OwnerName + "'s corpse found at " + entity.SidedPos.XYZ;
                                 Core.ModLogger.Notification(text);
-                                if (Config.Current.DebugMode.Val)
+                                if (Config.Current.DebugMode.Value)
                                 {
                                     byEntity.SendMessage(text);
                                 }

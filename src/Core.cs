@@ -1,4 +1,3 @@
-using SharedUtils.Gui;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 
@@ -21,7 +20,7 @@ namespace PlayerCorpse
         {
             Config.Current = api.LoadOrCreateConfig<Config>(Mod.Info.ModID + ".json");
 
-            api.World.Config.SetBool(Mod.Info.ModID + ":CorpseCompassEnabled", Config.Current.CorpseCompassEnabled.Val);
+            api.World.Config.SetBool(Mod.Info.ModID + ":CorpseCompassEnabled", Config.Current.CorpseCompassEnabled.Value);
 
             api.RegisterEntityBehaviorClass("playercorpseondeath", typeof(EntityBehaviorPlayerCorpseOnDeath));
             api.RegisterEntity("EntityPlayerCorpse", typeof(EntityPlayerCorpse));
@@ -30,9 +29,9 @@ namespace PlayerCorpse
 
         public override void AssetsLoaded(ICoreAPI api)
         {
-            if (Config.Current.CreateWaypoint.Val == "auto")
+            if (Config.Current.CreateWaypoint.Value == "auto")
             {
-                Config.Current.CreateWaypoint.Val = "always";
+                Config.Current.CreateWaypoint.Value = "always";
 
                 string[] hasDeathWaypointsMods = api.Assets.Get<string[]>(
                     new AssetLocation(Mod.Info.ModID, "config/hasdeathwaypointsmods.json"));
@@ -41,7 +40,7 @@ namespace PlayerCorpse
                 {
                     if (api.ModLoader.IsModEnabled(modid))
                     {
-                        Config.Current.CreateWaypoint.Val = "none";
+                        Config.Current.CreateWaypoint.Value = "none";
                     }
                 }
             }

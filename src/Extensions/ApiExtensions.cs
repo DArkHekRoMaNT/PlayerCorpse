@@ -8,74 +8,69 @@ namespace PlayerCorpse
     {
         public static string GetWorldId(this ICoreAPI api)
         {
-            if (api == null || api.World == null) return null;
-            return api.World.SavegameIdentifier;
-        }
-
-        public static T LoadOrCreateConfig<T>(this ICoreAPI api, string file, T defaultConfig = default(T)) where T : new()
-        {
-            try
+            if (api != null && api.World != null)
             {
-                T loadedConfig = api.LoadModConfig<T>(file);
-                if (loadedConfig != null)
-                {
-                    api.StoreModConfig<T>(loadedConfig, file);
-                    return loadedConfig;
-                }
-            }
-            catch (Exception e)
-            {
-                string format = "Failed loading file ({0}), error {1}. Will initialize new one";
-                Core.ModLogger.Error(string.Format(format), file, e);
-            }
-
-            T newConfig;
-            if (defaultConfig == null)
-            {
-                newConfig = defaultConfig;
-            }
-            else if (defaultConfig.Equals(default(T)))
-            {
-                newConfig = defaultConfig;
+                return api.World.SavegameIdentifier;
             }
             else
             {
-                newConfig = new T();
+                return null;
             }
-
-            api.StoreModConfig<T>(newConfig, file);
-            return newConfig;
         }
 
-        public static T LoadDataFile<T>(this ICoreAPI api, string file)
+        public static TConfig LoadOrCreateConfig<TConfig>(this ICoreAPI api, string file, TConfig defaultConfig = null) where TConfig : class, new()
+        {
+            TConfig config = null;
+
+            try
+            {
+                config = api.LoadModConfig<TConfig>(file);
+            }
+            catch (Exception e)
+            {
+                string format = "Failed loading config file ({0}), error {1}. Will initialize default config";
+                Core.ModLogger.Error(string.Format(format), file, e);
+            }
+
+            if (config == null)
+            {
+                Core.ModLogger.Notification("Will initialize default config");
+                config = defaultConfig ?? new TConfig();
+            }
+
+            api.StoreModConfig(config, file);
+            return config;
+        }
+
+        public static TData LoadDataFile<TData>(this ICoreAPI api, string file) where TData : class, new()
         {
             try
             {
                 if (File.Exists(file))
                 {
                     var content = File.ReadAllText(file);
-                    return JsonUtil.FromString<T>(content);
+                    return JsonUtil.FromString<TData>(content);
                 }
             }
             catch (Exception e)
             {
-                string format = "Failed loading file ({0}), error {1}";
+                string format = "Failed loading data file ({0}), error {1}. Will initialize new data file";
                 Core.ModLogger.Error(string.Format(format, file, e));
             }
 
-            return default(T);
+            return new TData();
         }
 
-        public static T LoadOrCreateDataFile<T>(this ICoreAPI api, string file) where T : new()
+        public static TData LoadOrCreateDataFile<TData>(this ICoreAPI api, string file) where TData : class, new()
         {
-            var data = api.LoadDataFile<T>(file);
-            if (data.Equals(default(T))) return data;
-
-            Core.ModLogger.Notification("Will initialize new one");
-
-            var newData = new T();
-            SaveDataFile(api, file, newData);
-            return newData;
+            var data = api.LoadDataFile<TData>(file);
+            if (data == null)
+            {
+                Core.ModLogger.Notification("Will initialize new data file");
+                data = new TData();
+                SaveDataFile(api, file, data);
+            }
+            return data;
         }
 
         public static void SaveDataFile<T>(this ICoreAPI api, string file, T data)
@@ -88,7 +83,7 @@ namespace PlayerCorpse
             }
             catch (Exception e)
             {
-                string format = "Failed loading file ({0}), error {1}";
+                string format = "Failed saving file ({0}), error {1}";
                 Core.ModLogger.Error(string.Format(format, file, e));
             }
         }

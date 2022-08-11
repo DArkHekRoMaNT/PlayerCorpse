@@ -11,7 +11,7 @@ namespace PlayerCorpse
             public readonly string Comment;
             public readonly T Default;
             private T val;
-            public T Val
+            public T Value
             {
                 get { return val != null ? val : val = Default; }
                 set { val = value != null ? value : Default; }
@@ -19,13 +19,13 @@ namespace PlayerCorpse
             public Part(T Default, string Comment = null)
             {
                 this.Default = Default;
-                this.Val = Default;
+                this.Value = Default;
                 this.Comment = Comment;
             }
             public Part(T Default, string prefix, string[] allowed, string postfix = null)
             {
                 this.Default = Default;
-                this.Val = Default;
+                this.Value = Default;
                 this.Comment = prefix;
 
                 this.Comment += "[" + allowed[0];

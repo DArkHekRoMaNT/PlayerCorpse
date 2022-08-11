@@ -32,7 +32,7 @@ namespace PlayerCorpse
 
             // Calculate the maximum size of inventory for a corpse, depending on the config
             int corpseInvQuantitySlots = 0;
-            foreach (var invClassName in Config.Current.SaveInventoryTypes.Val)
+            foreach (var invClassName in Config.Current.SaveInventoryTypes.Value)
             {
                 corpseInvQuantitySlots += player.InventoryManager.GetOwnInventory(invClassName).Count;
             }
@@ -51,9 +51,8 @@ namespace PlayerCorpse
 
                 corpseEntity.Inventory = new InventoryGeneric(corpseInvQuantitySlots, "playercorpse-" + player.PlayerUID, api);
 
-
                 int lastSlotId = 0;
-                foreach (var invClassName in Config.Current.SaveInventoryTypes.Val)
+                foreach (var invClassName in Config.Current.SaveInventoryTypes.Value)
                 {
                     // Skip armor if it does not drop after death
                     if (invClassName == GlobalConstants.characterInvClassName &&
@@ -114,28 +113,28 @@ namespace PlayerCorpse
                 if (!corpseEntity.Inventory.Empty)
                 {
                     // Create waypoint
-                    if (Config.Current.CreateWaypoint.Val == "always")
+                    if (Config.Current.CreateWaypoint.Value == "always")
                     {
                         (player as IServerPlayer).SendMessageAsClient(string.Format(
 
                             "/waypoint addati {0} ={1} ={2} ={3} {4} {5} Death: {6}",
-                            Config.Current.WaypointIcon.Val,
+                            Config.Current.WaypointIcon.Value,
                             (int)entity.SidedPos.X, (int)entity.SidedPos.Y, (int)entity.SidedPos.Z,
-                            Config.Current.PinWaypoint.Val,
-                            Config.Current.WaypointColor.Val,
+                            Config.Current.PinWaypoint.Value,
+                            Config.Current.WaypointColor.Value,
                             DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
 
                         ), GlobalConstants.AllChatGroups);
                     }
 
                     // Create corpse
-                    if (Config.Current.CreateCorpse.Val)
+                    if (Config.Current.CreateCorpse.Value)
                     {
                         api.World.SpawnEntity(corpseEntity);
 
                         string log = string.Format("Created {0} at {1}, id {2}", corpseEntity.GetName(), corpseEntity.SidedPos.XYZ.RelativePos(api), corpseEntity.EntityId);
                         Core.ModLogger.Notification(log);
-                        if (Config.Current.DebugMode.Val) api.SendMessageAll(log);
+                        if (Config.Current.DebugMode.Value) api.SendMessageAll(log);
                     }
                     else
                     {
@@ -144,7 +143,7 @@ namespace PlayerCorpse
                     }
 
                     // Save content for /returnthings
-                    if (Config.Current.MaxDeathContentSavedPerPlayer.Val > 0)
+                    if (Config.Current.MaxDeathContentSavedPerPlayer.Value > 0)
                     {
                         var dcm = api.ModLoader.GetModSystem<DeathContentManager>();
                         dcm.SaveDeathContent(corpseEntity.Inventory, player);

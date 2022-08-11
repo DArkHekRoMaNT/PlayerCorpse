@@ -21,7 +21,7 @@ namespace PlayerCorpse
             api.RegisterCommand("returnthings",
                 "[" + Core.ModId + "] Returns things losing on last death", ReturnThingsHelp,
                 ReturnThingsCommand,
-                Config.Current.NeedPrivilegeForReturnThings.Val
+                Config.Current.NeedPrivilegeForReturnThings.Value
             );
         }
 

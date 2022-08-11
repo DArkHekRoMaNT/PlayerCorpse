@@ -6,7 +6,7 @@ using System;
 using Vintagestory.API.Client;
 using Vintagestory.API.MathTools;
 
-namespace SharedUtils.Gui
+namespace PlayerCorpse
 {
     public class HudCircleRenderer : IRenderer
     {

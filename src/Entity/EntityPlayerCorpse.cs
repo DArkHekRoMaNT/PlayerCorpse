@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Text;
 using Vintagestory.API.Client;
@@ -11,13 +12,7 @@ namespace PlayerCorpse
 {
     public class EntityPlayerCorpse : EntityAgent
     {
-        public Core Core { get; private set; }
-
-        public override void Initialize(EntityProperties properties, ICoreAPI api, long InChunkIndex3d)
-        {
-            base.Initialize(properties, api, InChunkIndex3d);
-            Core = Api.ModLoader.GetModSystem<Core>();
-        }
+        private HudCircleRenderer _ringRenderer;
 
         public InventoryGeneric Inventory { get; set; }
 
@@ -50,7 +45,7 @@ namespace PlayerCorpse
             get
             {
                 double hoursPassed = Api.World.Calendar.TotalHours - CreationTime;
-                int hoursForFree = Config.Current.FreeCorpseAfterTime.Val;
+                int hoursForFree = Config.Current.FreeCorpseAfterTime.Value;
 
                 bool alwaysFree = hoursForFree == 0;
                 bool neverFree = hoursForFree < 0;
@@ -60,39 +55,45 @@ namespace PlayerCorpse
             }
         }
 
-
         /// <summary> How many milliseconds have passed since the last interaction check </summary>
-        private long lastInteractMs;
-        public long LastInteractPassedMs
+        long LastInteractPassedMs
         {
             get { return World.ElapsedMilliseconds - lastInteractMs; }
             set { lastInteractMs = value; }
         }
+        private long lastInteractMs;
 
 
         /// <summary> How many seconds have passed since the interaction began </summary>
-        public float SecondsPassed { get; set; }
+        float SecondsPassed { get; set; }
 
+        public override void Initialize(EntityProperties properties, ICoreAPI api, long InChunkIndex3d)
+        {
+            base.Initialize(properties, api, InChunkIndex3d);
+            _ringRenderer = Api.ModLoader.GetModSystem<Core>().InteractRingRenderer;
+        }
 
         public override void OnEntityLoaded()
         {
             base.OnEntityLoaded();
             if (Inventory != null)
             {
-                foreach (var slot in Inventory)
-                {
-                    if (slot.Itemstack != null)
-                    {
-                        slot.Itemstack.ResolveBlockOrItem(World);
-                    }
-                }
+                Inventory.Api = Api;
+                Inventory.ResolveBlocksOrItems();
             }
         }
 
         public override bool ShouldReceiveDamage(DamageSource damageSource, float damage)
         {
-            if (!Config.Current.CanFired.Val && damageSource.Type == EnumDamageType.Fire) return false;
-            if (!Config.Current.HasHealth.Val) return false;
+            if (Config.Current.CanFired.Value == false && damageSource.Type == EnumDamageType.Fire)
+            {
+                return false;
+            }
+
+            if (Config.Current.HasHealth.Value == false)
+            {
+                return false;
+            }
 
             return base.ShouldReceiveDamage(damageSource, damage);
         }
@@ -105,7 +106,7 @@ namespace PlayerCorpse
             {
                 if (SecondsPassed != 0 && Api.Side == EnumAppSide.Client)
                 {
-                    Core.InteractRingRenderer.CircleVisible = false;
+                    _ringRenderer.CircleVisible = false;
                 }
                 SecondsPassed = 0;
             }
@@ -114,7 +115,7 @@ namespace PlayerCorpse
                 SecondsPassed += dt;
                 if (Api.Side == EnumAppSide.Client)
                 {
-                    Core.InteractRingRenderer.CircleProgress = SecondsPassed / Config.Current.CorpseCollectionTime.Val;
+                    _ringRenderer.CircleProgress = SecondsPassed / Config.Current.CorpseCollectionTime.Value;
                 }
             }
         }
@@ -122,48 +123,75 @@ namespace PlayerCorpse
         public override void OnInteract(EntityAgent byEntity, ItemSlot itemslot, Vec3d hitPosition, EnumInteractMode mode)
         {
             EntityPlayer entityPlayer = byEntity as EntityPlayer;
-            if (entityPlayer == null) return;
-            IPlayer byPlayer = World.PlayerByUid(entityPlayer.PlayerUID);
-            if (byPlayer == null) return;
-
-            // Check owner
-            if (byPlayer.PlayerUID != OwnerUID &&
-                byPlayer.WorldData.CurrentGameMode != EnumGameMode.Creative &&
-                !IsFree)
+            if (entityPlayer != null)
             {
-                IServerPlayer sp = byPlayer as IServerPlayer;
-                if (sp != null) sp.SendIngameError("", Lang.Get("game:ingameerror-not-corpse-owner"));
-                base.OnInteract(byEntity, itemslot, hitPosition, mode);
-                return;
-            }
-
-
-            if (Api.Side == EnumAppSide.Server)
-            {
-                if (Inventory == null || Inventory.Count == 0) Die();
-                else if (SecondsPassed > Config.Current.CorpseCollectionTime.Val)
+                IPlayer byPlayer = World.PlayerByUid(entityPlayer.PlayerUID);
+                if (byPlayer != null)
                 {
-                    foreach (var slot in Inventory)
+                    if (!CanCollect(byPlayer))
                     {
-                        if (slot.Empty) continue;
-
-                        if (!byPlayer.InventoryManager.TryGiveItemstack(slot.Itemstack))
+                        IServerPlayer sp = byPlayer as IServerPlayer;
+                        if (sp != null)
                         {
-                            Api.World.SpawnItemEntity(slot.Itemstack, byEntity.ServerPos.XYZ.AddCopy(0, 1, 0));
+                            sp.SendIngameError("", Lang.Get("game:ingameerror-not-corpse-owner"));
                         }
-                        slot.Itemstack = null;
-                        slot.MarkDirty();
                     }
+                    else
+                    {
+                        if (Api.Side == EnumAppSide.Server)
+                        {
+                            if (Inventory == null || Inventory.Count == 0)
+                            {
+                                string format = "{0} at {1} is empty and will be removed immediately, id {3}";
+                                string msg = string.Format(format, GetName(), SidedPos.XYZ.RelativePos(Api), byPlayer.PlayerName, EntityId);
+                                Core.ModLogger.Notification(msg);
+                                Die();
+                            }
+                            else if (SecondsPassed > Config.Current.CorpseCollectionTime.Value)
+                            {
+                                Collect(byPlayer);
+                            }
+                        }
 
-                    string log = string.Format("{0} at {1} can be collected by {2}, id {3}", GetName(), SidedPos.XYZ.RelativePos(Api), (byEntity as EntityPlayer).Player.PlayerName, EntityId);
-                    Core.ModLogger.Notification(log);
-                    if (Config.Current.DebugMode.Val) Api.SendMessageAll(log);
-
-                    Die();
+                        LastInteractPassedMs = World.ElapsedMilliseconds;
+                        return;
+                    }
                 }
             }
 
-            LastInteractPassedMs = World.ElapsedMilliseconds;
+            base.OnInteract(byEntity, itemslot, hitPosition, mode);
+        }
+
+        private bool CanCollect(IPlayer byPlayer)
+        {
+            return byPlayer.PlayerUID == OwnerUID ||
+                   byPlayer.WorldData.CurrentGameMode == EnumGameMode.Creative ||
+                   IsFree;
+        }
+
+        private void Collect(IPlayer byPlayer)
+        {
+            foreach (var slot in Inventory)
+            {
+                if (slot.Empty) continue;
+
+                if (!byPlayer.InventoryManager.TryGiveItemstack(slot.Itemstack))
+                {
+                    Api.World.SpawnItemEntity(slot.Itemstack, byPlayer.Entity.ServerPos.XYZ.AddCopy(0, 1, 0));
+                }
+                slot.Itemstack = null;
+                slot.MarkDirty();
+            }
+
+            string format = "{0} at {1} can be collected by {2}, id {3}";
+            string msg = string.Format(format, GetName(), SidedPos.XYZ.RelativePos(Api), byPlayer.PlayerName, EntityId);
+            Core.ModLogger.Notification(msg);
+            if (Config.Current.DebugMode.Value)
+            {
+                Api.SendMessageAll(msg);
+            }
+
+            Die();
         }
 
         public override void Die(EnumDespawnReason reason = EnumDespawnReason.Death, DamageSource damageSourceForDeath = null)
@@ -174,9 +202,13 @@ namespace PlayerCorpse
                 Inventory.DropAll(SidedPos.XYZ.AddCopy(0, 1, 0));
             }
 
-            string log = string.Format("{0} at {1} was destroyed, id {2}", GetName(), SidedPos.XYZ.RelativePos(Api), EntityId);
-            Core.ModLogger.Notification(log);
-            if (Config.Current.DebugMode.Val) Api.SendMessageAll(log);
+            string format = "{0} at {1} was destroyed, id {2}";
+            string msg = string.Format(format, GetName(), SidedPos.XYZ.RelativePos(Api), EntityId);
+            Core.ModLogger.Notification(msg);
+            if (Config.Current.DebugMode.Value)
+            {
+                Api.SendMessageAll(msg);
+            }
 
             base.Die(reason, damageSourceForDeath);
         }
@@ -187,19 +219,19 @@ namespace PlayerCorpse
 
             if (Api.Side == EnumAppSide.Client)
             {
-                Core.InteractRingRenderer.CircleVisible = false;
+                _ringRenderer.CircleVisible = false;
             }
         }
 
         public override void ToBytes(BinaryWriter writer, bool forClient)
         {
-            base.ToBytes(writer, forClient);
-
-            if (Inventory != null && WatchedAttributes != null)
+            if (Inventory != null && Inventory.Count > 0 && WatchedAttributes != null)
             {
                 WatchedAttributes.SetString("invid", Inventory.InventoryID);
                 Inventory.ToTreeAttributes(WatchedAttributes);
             }
+
+            base.ToBytes(writer, forClient);
         }
 
         public override void FromBytes(BinaryReader reader, bool forClient)
@@ -209,13 +241,18 @@ namespace PlayerCorpse
             if (WatchedAttributes != null)
             {
                 string inventoryID = WatchedAttributes.GetString("invid");
+                int qslots = WatchedAttributes.GetInt("qslots", 0);
 
-                Inventory = new InventoryGeneric(0, inventoryID, Api);
+                Inventory = new InventoryGeneric(qslots, inventoryID, Api);
                 Inventory.FromTreeAttributes(WatchedAttributes);
+
+                if (Api != null)
+                {
+                    Inventory.ResolveBlocksOrItems();
+                }
             }
         }
 
-        /// <summary> Get the corpse name </summary>
         public override string GetName()
         {
             return Lang.Get("{0}'s corpse", OwnerName);

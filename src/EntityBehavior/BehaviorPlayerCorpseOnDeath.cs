@@ -102,7 +102,7 @@ namespace PlayerCorpse
                 // Attempt to align the corpse to the center of the block so that it does not crawl higher
                 corpseEntity.ServerPos.SetPos(new Vec3d(
                     (int)entityPlayer.ServerPos.X + 0.5f,
-                    (int)entityPlayer.ServerPos.Y + 1,
+                    (int)entityPlayer.ServerPos.Y + 0f, // changed from 1 to 0 for fix dancing corpse issue
                     (int)entityPlayer.ServerPos.Z + 0.5f
                 ));
                 corpseEntity.Pos.SetFrom(corpseEntity.ServerPos);

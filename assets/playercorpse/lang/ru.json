@@ -2,7 +2,7 @@
   "item-creature-playercorpse": "Труп игрока",
   "blockhelp-collect": "Подобрать",
 
-  "game:ingameerror-not-corpse-owner": " Это не ваш труп!",
+  "game:ingameerror-not-corpse-owner": "Это не ваш труп!",
   "corpse-free": "Доступен для всех",
   "corpse-created(date={0})": "Создан {0}",
 

@@ -12,7 +12,7 @@ namespace PlayerCorpse
         {
             ICoreAPI api = player.Entity.Api;
 
-            string localPath = "ModData" + api.GetWorldId() + "/" + Mod.Info.ModID + "/" + player.PlayerUID;
+            string localPath = "ModData/" + api.GetWorldId() + "/" + Mod.Info.ModID + "/" + player.PlayerUID;
             string path = api.GetOrCreateDataPath(localPath);
             string[] files = Directory.GetFiles(path).OrderByDescending(f => new FileInfo(f).Name).ToArray();
 
@@ -34,7 +34,7 @@ namespace PlayerCorpse
             if (Config.Current.MaxDeathContentSavedPerPlayer.Value <= offset)
                 throw new IndexOutOfRangeException("offset is too large or save data disabled");
 
-            string localPath = "ModData" + api.GetWorldId() + "/" + Mod.Info.ModID + "/" + player.PlayerUID;
+            string localPath = "ModData/" + api.GetWorldId() + "/" + Mod.Info.ModID + "/" + player.PlayerUID;
             string path = api.GetOrCreateDataPath(localPath);
             string file = Directory.GetFiles(path).OrderByDescending(f => new FileInfo(f).Name).ToArray().ElementAt(offset);
 

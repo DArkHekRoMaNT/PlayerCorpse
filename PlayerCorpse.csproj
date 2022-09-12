@@ -14,7 +14,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MinGameVersion>1.17.3</MinGameVersion>
+		<MinGameVersion>1.17.0</MinGameVersion>
 		<RunGameVersion>1.17.3</RunGameVersion>
 	</PropertyGroup>
 

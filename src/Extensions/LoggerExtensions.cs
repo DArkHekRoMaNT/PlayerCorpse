@@ -27,14 +27,14 @@ namespace PlayerCorpse
         public override void StartServerSide(ICoreServerAPI api)
         {
             api.Network
-                .RegisterChannel("loggerextensions")
+                .RegisterChannel(Mod.Info.ModID + "loggerextensions")
                 .RegisterMessageType(typeof(NetworkSendCurrentMessage));
         }
 
         public override void StartClientSide(ICoreClientAPI api)
         {
             api.Network
-                .RegisterChannel("loggerextensions")
+                .RegisterChannel(Mod.Info.ModID + "loggerextensions")
                 .RegisterMessageType(typeof(NetworkSendCurrentMessage))
                 .SetMessageHandler<NetworkSendCurrentMessage>(SendMessageFromServer);
         }
@@ -51,7 +51,7 @@ namespace PlayerCorpse
         public static void SendMessageAsClient(this IServerPlayer player, string msg, int chatGroup = -1)
         {
             (player.Entity.Api as ICoreServerAPI).Network
-                .GetChannel("loggerextensions")
+                .GetChannel(Core.ModId + "loggerextensions")
                 .SendPacket(new NetworkSendCurrentMessage()
                 {
                     msg = msg,

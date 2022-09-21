@@ -21,10 +21,8 @@ namespace PlayerCorpse
         public override void Start(ICoreAPI api)
         {
             Config.Current = api.LoadOrCreateConfig<Config>(Mod.Info.ModID + ".json", ModLogger);
-
             api.World.Config.SetBool(Mod.Info.ModID + ":CorpseCompassEnabled", Config.Current.CorpseCompassEnabled.Value);
 
-            api.RegisterEntityBehaviorClass("playercorpseondeath", typeof(EntityBehaviorPlayerCorpseOnDeath));
             api.RegisterEntity("EntityPlayerCorpse", typeof(EntityPlayerCorpse));
             api.RegisterItemClass("ItemCorpseCompass", typeof(ItemCorpseCompass));
         }

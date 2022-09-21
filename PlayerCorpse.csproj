@@ -5,7 +5,7 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<LangVersion>latest</LangVersion>
-		<!--Nullable>enable</Nullable-->
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 	<Choose>
 		<When Condition=" '$(Configuration)' == 'Debug' ">

@@ -102,14 +102,14 @@
 	<Target Name="MakeZip">
 
 		<!-- Update modinfo.json if ModInfoFirst disabled -->
-		<UpdateModVersion Condition="!$(ModinfoFirst)" ModInfoPath="$(ModInfoPath)" ModVersion="$(Version)" />
-		<UpdateGameVersion Condition="!$(ModinfoFirst)" ModInfoPath="$(ModInfoPath)" GameVersion="$(MinGameVersion)" />
+		<UpdateModVersion Condition="!$(ModInfoFirst)" ModInfoPath="$(ModInfoPath)" ModVersion="$(Version)" />
+		<UpdateGameVersion Condition="!$(ModInfoFirst)" ModInfoPath="$(ModInfoPath)" GameVersion="$(MinGameVersion)" />
 
 		<!-- Use props from modinfo.json if ModInfoFirst enabled -->
-		<GetModVersion Condition="$(ModinfoFirst)" ModInfoPath="$(ModInfoPath)">
+		<GetModVersion Condition="$(ModInfoFirst)" ModInfoPath="$(ModInfoPath)">
 			<Output TaskParameter="ModVersion" PropertyName="Version" />
 		</GetModVersion>
-		<GetGameVersion Condition="$(ModinfoFirst)" ModInfoPath="$(ModInfoPath)">
+		<GetGameVersion Condition="$(ModInfoFirst)" ModInfoPath="$(ModInfoPath)">
 			<Output TaskParameter="GameVersion" PropertyName="MinGameVersion" />
 		</GetGameVersion>
 

@@ -2,7 +2,7 @@
 <Project>
 	<PropertyGroup>
 		<!-- Priority modinfo.json data over props -->
-		<ModinfoFirst>false</ModinfoFirst>
+		<ModInfoFirst>false</ModInfoFirst>
 	</PropertyGroup>
 
 	<!-- Default props -->
@@ -24,9 +24,6 @@
 		<Content Include="$(ModInfoPath)" />
 		<Content Include="$(ModIconPath)" />
 		<Content Include="@(IncludeFiles)" />
-		<Folder Include="$(ReleasesPath)" />
-		<Folder Include="$(ModsPath)" />
-		<Folder Include="$(AssetsPath)" />
 	</ItemGroup>
 
 	<Target Name="BuildMod" AfterTargets="PostBuildEvent">

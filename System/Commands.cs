@@ -1,5 +1,6 @@
 ﻿using CommonLib.Extensions;
 using CommonLib.Utils;
+using PlayerCorpse.System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,14 +13,14 @@ namespace PlayerCorpse
 {
     public class Commands : ModSystem
     {
-        private readonly string ReturnThingsHelp =
+        private const string ReturnThingsHelp =
             "/returnthings [from player] [to player] [index] or /returnthings [from player] list";
 
-        private ICoreServerAPI api;
+        private ICoreServerAPI sapi = null!;
 
         public override void StartServerSide(ICoreServerAPI api)
         {
-            this.api = api;
+            this.sapi = api;
             api.RegisterCommand("returnthings",
                 "[" + Core.ModId + "] Returns things losing on last death", ReturnThingsHelp,
                 ReturnThingsCommand,
@@ -36,15 +37,15 @@ namespace PlayerCorpse
             }
 
 
-            IPlayer fromPlayer = api.World.AllPlayers.FirstOrDefault(p => p.PlayerName.ToLower() == args[0].ToLower());
+            IPlayer fromPlayer = sapi.World.AllPlayers.FirstOrDefault(p => p.PlayerName.ToLower() == args[0].ToLower());
             if (fromPlayer == null)
             {
                 player.SendMessage(Lang.Get("Player {0} not found", args[0]));
                 return;
             }
 
-            string localPath = "ModData/" + api.GetWorldId() + "/" + Mod.Info.ModID + "/" + fromPlayer.PlayerUID;
-            string path = api.GetOrCreateDataPath(localPath);
+            string localPath = Path.Combine("ModData", sapi.GetWorldId(), Mod.Info.ModID, fromPlayer.PlayerUID);
+            string path = sapi.GetOrCreateDataPath(localPath);
             string[] files = Directory.GetFiles(path).OrderByDescending(f => new FileInfo(f).Name).ToArray();
 
             if (args[1] == "list")
@@ -64,14 +65,14 @@ namespace PlayerCorpse
                 return;
             }
 
-            IPlayer toPlayer = api.World.AllPlayers.FirstOrDefault(p => p.PlayerName.ToLower() == args[1].ToLower());
+            IPlayer toPlayer = sapi.World.AllPlayers.FirstOrDefault(p => p.PlayerName.ToLower() == args[1].ToLower());
             if (toPlayer == null)
             {
                 player.SendMessage(Lang.Get("Player {0} not found", args[1]));
                 return;
             }
 
-            if (!api.World.AllOnlinePlayers.Contains(toPlayer) || toPlayer.Entity == null)
+            if (!sapi.World.AllOnlinePlayers.Contains(toPlayer) || toPlayer.Entity == null)
             {
                 player.SendMessage(Lang.Get("Player {0} is offline or not fully loaded.", args[1]));
                 return;
@@ -84,7 +85,7 @@ namespace PlayerCorpse
                 return;
             }
 
-            var dcm = api.ModLoader.GetModSystem<DeathContentManager>();
+            var dcm = sapi.ModLoader.GetModSystem<DeathContentManager>();
             InventoryGeneric inventory = dcm.LoadLastDeathContent(fromPlayer, offset);
             foreach (var slot in inventory)
             {
@@ -92,7 +93,7 @@ namespace PlayerCorpse
 
                 if (!toPlayer.InventoryManager.TryGiveItemstack(slot.Itemstack))
                 {
-                    api.World.SpawnItemEntity(slot.Itemstack, toPlayer.Entity.ServerPos.XYZ.AddCopy(0, 1, 0));
+                    sapi.World.SpawnItemEntity(slot.Itemstack, toPlayer.Entity.ServerPos.XYZ.AddCopy(0, 1, 0));
                 }
                 slot.Itemstack = null;
                 slot.MarkDirty();

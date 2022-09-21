@@ -1,4 +1,3 @@
-using CommonLib.Extensions;
 using CommonLib.UI;
 using CommonLib.Utils;
 using System.IO;
@@ -124,16 +123,14 @@ namespace PlayerCorpse
 
         public override void OnInteract(EntityAgent byEntity, ItemSlot itemslot, Vec3d hitPosition, EnumInteractMode mode)
         {
-            EntityPlayer entityPlayer = byEntity as EntityPlayer;
-            if (entityPlayer != null)
+            if (byEntity is EntityPlayer entityPlayer)
             {
                 IPlayer byPlayer = World.PlayerByUid(entityPlayer.PlayerUID);
                 if (byPlayer != null)
                 {
                     if (!CanCollect(byPlayer))
                     {
-                        IServerPlayer sp = byPlayer as IServerPlayer;
-                        if (sp != null)
+                        if (byPlayer is IServerPlayer sp)
                         {
                             sp.SendIngameError("", Lang.Get("game:ingameerror-not-corpse-owner"));
                         }
@@ -262,7 +259,7 @@ namespace PlayerCorpse
 
         public override string GetInfoText()
         {
-            StringBuilder str = new StringBuilder();
+            var str = new StringBuilder();
 
             str.Append(base.GetInfoText());
             str.AppendLine(Lang.Get(Core.ModId + ":corpse-created(date={0})", CreationRealDatetime));

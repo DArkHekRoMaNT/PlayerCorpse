@@ -9,14 +9,10 @@ using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 
-namespace PlayerCorpse
+namespace PlayerCorpse.Entities
 {
     public class EntityPlayerCorpse : EntityAgent
     {
-        private HudCircleRenderer _ringRenderer;
-
-        public InventoryGeneric Inventory { get; set; }
-
         public double CreationTime
         {
             get { return WatchedAttributes.GetDouble("creationTime", Api.World.Calendar.TotalHours); }
@@ -56,8 +52,16 @@ namespace PlayerCorpse
             }
         }
 
+        public InventoryGeneric? Inventory { get; set; }
+
+
+        private HudCircleRenderer interactRingRenderer = null!;
+
+        /// <summary> How many seconds have passed since the interaction began </summary>
+        private float SecondsPassed { get; set; }
+
         /// <summary> How many milliseconds have passed since the last interaction check </summary>
-        long LastInteractPassedMs
+        private long LastInteractPassedMs
         {
             get { return World.ElapsedMilliseconds - lastInteractMs; }
             set { lastInteractMs = value; }
@@ -65,13 +69,17 @@ namespace PlayerCorpse
         private long lastInteractMs;
 
 
-        /// <summary> How many seconds have passed since the interaction began </summary>
-        float SecondsPassed { get; set; }
-
         public override void Initialize(EntityProperties properties, ICoreAPI api, long InChunkIndex3d)
         {
             base.Initialize(properties, api, InChunkIndex3d);
-            _ringRenderer = Api.ModLoader.GetModSystem<Core>().InteractRingRenderer;
+
+            if (api is ICoreClientAPI capi)
+            {
+                interactRingRenderer = new HudCircleRenderer(capi, new HudCircleSettings()
+                {
+                    Color = 0xFF9500
+                });
+            }
         }
 
         public override void OnEntityLoaded()
@@ -107,7 +115,7 @@ namespace PlayerCorpse
             {
                 if (SecondsPassed != 0 && Api.Side == EnumAppSide.Client)
                 {
-                    _ringRenderer.CircleVisible = false;
+                    interactRingRenderer.CircleVisible = false;
                 }
                 SecondsPassed = 0;
             }
@@ -116,7 +124,7 @@ namespace PlayerCorpse
                 SecondsPassed += dt;
                 if (Api.Side == EnumAppSide.Client)
                 {
-                    _ringRenderer.CircleProgress = SecondsPassed / Config.Current.CorpseCollectionTime.Value;
+                    interactRingRenderer.CircleProgress = SecondsPassed / Config.Current.CorpseCollectionTime.Value;
                 }
             }
         }
@@ -170,20 +178,28 @@ namespace PlayerCorpse
 
         private void Collect(IPlayer byPlayer)
         {
-            foreach (var slot in Inventory)
+            if (Inventory != null)
             {
-                if (slot.Empty) continue;
-
-                if (!byPlayer.InventoryManager.TryGiveItemstack(slot.Itemstack))
+                foreach (var slot in Inventory)
                 {
-                    Api.World.SpawnItemEntity(slot.Itemstack, byPlayer.Entity.ServerPos.XYZ.AddCopy(0, 1, 0));
+                    if (slot.Empty) continue;
+
+                    if (!byPlayer.InventoryManager.TryGiveItemstack(slot.Itemstack))
+                    {
+                        Api.World.SpawnItemEntity(slot.Itemstack, byPlayer.Entity.ServerPos.XYZ.AddCopy(0, 1, 0));
+                    }
+                    slot.Itemstack = null;
+                    slot.MarkDirty();
                 }
-                slot.Itemstack = null;
-                slot.MarkDirty();
             }
 
-            string format = "{0} at {1} can be collected by {2}, id {3}";
-            string msg = string.Format(format, GetName(), SidedPos.XYZ.RelativePos(Api), byPlayer.PlayerName, EntityId);
+            string msg = string.Format(
+                "{0} at {1} can be collected by {2}, id {3}",
+                GetName(),
+                SidedPos.XYZ.RelativePos(Api),
+                byPlayer.PlayerName,
+                EntityId);
+
             Core.ModLogger.Notification(msg);
             if (Config.Current.DebugMode.Value)
             {
@@ -193,7 +209,7 @@ namespace PlayerCorpse
             Die();
         }
 
-        public override void Die(EnumDespawnReason reason = EnumDespawnReason.Death, DamageSource damageSourceForDeath = null)
+        public override void Die(EnumDespawnReason reason = EnumDespawnReason.Death, DamageSource? damageSourceForDeath = null)
         {
             if (reason == EnumDespawnReason.Death && Inventory != null)
             {
@@ -201,8 +217,12 @@ namespace PlayerCorpse
                 Inventory.DropAll(SidedPos.XYZ.AddCopy(0, 1, 0));
             }
 
-            string format = "{0} at {1} was destroyed, id {2}";
-            string msg = string.Format(format, GetName(), SidedPos.XYZ.RelativePos(Api), EntityId);
+            string msg = string.Format(
+                "{0} at {1} was destroyed, id {2}",
+                GetName(),
+                SidedPos.XYZ.RelativePos(Api),
+                EntityId);
+
             Core.ModLogger.Notification(msg);
             if (Config.Current.DebugMode.Value)
             {
@@ -218,8 +238,9 @@ namespace PlayerCorpse
 
             if (Api.Side == EnumAppSide.Client)
             {
-                _ringRenderer.CircleVisible = false;
+                interactRingRenderer.CircleVisible = false;
             }
+
         }
 
         public override void ToBytes(BinaryWriter writer, bool forClient)
@@ -259,17 +280,17 @@ namespace PlayerCorpse
 
         public override string GetInfoText()
         {
-            var str = new StringBuilder();
+            var sb = new StringBuilder();
 
-            str.Append(base.GetInfoText());
-            str.AppendLine(Lang.Get(Core.ModId + ":corpse-created(date={0})", CreationRealDatetime));
+            sb.Append(base.GetInfoText());
+            sb.AppendLine(Lang.Get(Core.ModId + ":corpse-created(date={0})", CreationRealDatetime));
 
             if (IsFree)
             {
-                str.AppendLine(Lang.Get(Core.ModId + ":corpse-free"));
+                sb.AppendLine(Lang.Get(Core.ModId + ":corpse-free"));
             }
 
-            return str.ToString();
+            return sb.ToString();
         }
 
         public override WorldInteraction[] GetInteractionHelp(IClientWorldAccessor world, EntitySelection es, IClientPlayer player)

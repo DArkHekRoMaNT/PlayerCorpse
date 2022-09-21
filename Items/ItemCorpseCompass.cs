@@ -1,14 +1,15 @@
 ﻿using CommonLib.Utils;
+using PlayerCorpse.Entities;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 
-namespace PlayerCorpse
+namespace PlayerCorpse.Items
 {
     public class ItemCorpseCompass : Item
     {
-        readonly SimpleParticleProperties particles = new SimpleParticleProperties()
+        public static SimpleParticleProperties Particles => new()
         {
             MinPos = Vec3d.Zero,
             AddPos = new Vec3d(.2, .2, .2),
@@ -36,14 +37,14 @@ namespace PlayerCorpse
 
             if (api.Side == EnumAppSide.Server)
             {
-                var sapi = api as ICoreServerAPI;
+                var sapi = (api as ICoreServerAPI)!;
 
                 int chunkSize = sapi.WorldManager.ChunkSize;
 
                 int chunkX = (int)byEntity.SidedPos.X / chunkSize;
                 int chunkZ = (int)byEntity.SidedPos.Z / chunkSize;
 
-                Vec3d lastOwnedCorpsePos = null;
+                Vec3d? lastOwnedCorpsePos = null;
                 int ownedCorpseCount = 0;
 
                 int chunksInColum = sapi.WorldManager.MapSizeY / chunkSize;
@@ -52,10 +53,9 @@ namespace PlayerCorpse
                     var chunk = sapi.WorldManager.GetChunk(chunkX, i, chunkZ);
                     foreach (var entity in chunk.Entities)
                     {
-                        EntityPlayerCorpse corpseEntity = entity as EntityPlayerCorpse;
-                        if (corpseEntity != null)
+                        if (entity is EntityPlayerCorpse corpseEntity)
                         {
-                            if (corpseEntity.OwnerUID == (byEntity as EntityPlayer).PlayerUID)
+                            if (corpseEntity.OwnerUID == (byEntity as EntityPlayer)?.PlayerUID)
                             {
                                 lastOwnedCorpsePos = entity.SidedPos.XYZ;
                                 ownedCorpseCount++;
@@ -76,13 +76,13 @@ namespace PlayerCorpse
 
                 if (ownedCorpseCount > 0)
                 {
-                    particles.MinPos = byEntity.SidedPos.XYZ.Add(0, 1, 0);
+                    Particles.MinPos = byEntity.SidedPos.XYZ.Add(0, 1, 0);
 
                     var relativePos = lastOwnedCorpsePos - byEntity.SidedPos.XYZ.Add(0, 1, 0);
-                    particles.MinVelocity = relativePos.ToVec3f() / (particles.LifeLength * 3);
-                    particles.AddPos = particles.MinVelocity.ToVec3d() * 0.1;
+                    Particles.MinVelocity = relativePos.ToVec3f() / (Particles.LifeLength * 3);
+                    Particles.AddPos = Particles.MinVelocity.ToVec3d() * 0.1;
 
-                    api.World.SpawnParticles(particles);
+                    api.World.SpawnParticles(Particles);
                 }
                 else
                 {

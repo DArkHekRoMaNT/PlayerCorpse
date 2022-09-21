@@ -1,5 +1,6 @@
 using CommonLib.Extensions;
 using CommonLib.Utils;
+using PlayerCorpse.Entities;
 using System;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,7 @@ using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 
-namespace PlayerCorpse.System
+namespace PlayerCorpse.Systems
 {
     public class DeathContentManager : ModSystem
     {

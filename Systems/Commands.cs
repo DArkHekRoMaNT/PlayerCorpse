@@ -1,6 +1,5 @@
 ﻿using CommonLib.Extensions;
 using CommonLib.Utils;
-using PlayerCorpse.System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,7 +8,7 @@ using Vintagestory.API.Config;
 using Vintagestory.API.Server;
 using Vintagestory.API.Util;
 
-namespace PlayerCorpse
+namespace PlayerCorpse.Systems
 {
     public class Commands : ModSystem
     {
@@ -20,7 +19,7 @@ namespace PlayerCorpse
 
         public override void StartServerSide(ICoreServerAPI api)
         {
-            this.sapi = api;
+            sapi = api;
             api.RegisterCommand("returnthings",
                 "[" + Core.ModId + "] Returns things losing on last death", ReturnThingsHelp,
                 ReturnThingsCommand,

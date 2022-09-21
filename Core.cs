@@ -1,5 +1,7 @@
 using CommonLib.UI;
 using CommonLib.Utils;
+using PlayerCorpse.Entities;
+using PlayerCorpse.Items;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 
@@ -9,8 +11,6 @@ namespace PlayerCorpse
     {
         public static string ModId { get; private set; }
         public static ILogger ModLogger { get; private set; }
-
-        public HudCircleRenderer InteractRingRenderer { get; private set; }
 
         public override void StartPre(ICoreAPI api)
         {
@@ -44,14 +44,6 @@ namespace PlayerCorpse
                     }
                 }
             }
-        }
-
-        public override void StartClientSide(ICoreClientAPI api)
-        {
-            InteractRingRenderer = new HudCircleRenderer(api, new HudCircleSettings()
-            {
-                Color = 0xFF9500
-            });
         }
     }
 }

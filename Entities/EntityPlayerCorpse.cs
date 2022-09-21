@@ -125,6 +125,31 @@ namespace PlayerCorpse.Entities
                 if (Api.Side == EnumAppSide.Client)
                 {
                     interactRingRenderer.CircleProgress = SecondsPassed / Config.Current.CorpseCollectionTime.Value;
+                    if (SecondsPassed > Config.Current.CorpseCollectionTime.Value)
+                    {
+                        ForceUpdateSecondsPassedOnServer();
+                    }
+                }
+            }
+        }
+
+        private void ForceUpdateSecondsPassedOnServer()
+        {
+            if (Api is ICoreClientAPI capi)
+            {
+                capi.Network.SendEntityPacket(EntityId, 141325, new[] { (byte)SecondsPassed });
+            }
+        }
+
+        public override void OnReceivedClientPacket(IServerPlayer player, int packetid, byte[] data)
+        {
+            base.OnReceivedClientPacket(player, packetid, data);
+
+            if (packetid == 141325)
+            {
+                if (data.Length > 0 && data[0] > SecondsPassed)
+                {
+                    SecondsPassed = data[0];
                 }
             }
         }

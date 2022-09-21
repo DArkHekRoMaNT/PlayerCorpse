@@ -1,0 +1,133 @@
+﻿<!-- Tasks for assembly before launching and publishing the mod -->
+<Project>
+	<!-- Custom Task for get mod version from modinfo.json -->
+	<UsingTask TaskName="GetModVersion"
+			   TaskFactory="CodeTaskFactory"
+			   AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+		<ParameterGroup>
+			<ModInfoPath ParameterType="System.String" Required="true" />
+			<ModVersion ParameterType="System.String" Output="true" />
+		</ParameterGroup>
+		<Task>
+			<Using Namespace="System.IO"/>
+			<Using Namespace="System.Text.RegularExpressions"/>
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+					string json = File.ReadAllText(ModInfoPath);
+					var match = Regex.Match(json, "\"version\": \"((\\\" |[^\"])*)");
+					this.ModVersion = match.Value.Substring(12, match.Length - 12);
+                ]]>
+			</Code>
+		</Task>
+	</UsingTask>
+
+	<!-- Custom Task for get game version from modinfo.json -->
+	<UsingTask TaskName="GetGameVersion"
+			   TaskFactory="CodeTaskFactory"
+			   AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+		<ParameterGroup>
+			<ModInfoPath ParameterType="System.String" Required="true" />
+			<GameVersion ParameterType="System.String" Output="true" />
+		</ParameterGroup>
+		<Task>
+			<Using Namespace="System.IO"/>
+			<Using Namespace="System.Text.RegularExpressions"/>
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+					string json = File.ReadAllText(ModInfoPath);
+					var match = Regex.Match(json, "\"game\": \"((\\\" |[^\"])*)");
+					this.GameVersion = match.Value.Substring(9, match.Length - 9);
+                ]]>
+			</Code>
+		</Task>
+	</UsingTask>
+
+	<!-- Custom Task for update mod version in modinfo.json -->
+	<UsingTask TaskName="UpdateModVersion"
+			   TaskFactory="CodeTaskFactory"
+			   AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+		<ParameterGroup>
+			<ModInfoPath ParameterType="System.String" Required="true" />
+			<ModVersion ParameterType="System.String" Required="true" />
+		</ParameterGroup>
+		<Task>
+			<Using Namespace="System.IO"/>
+			<Using Namespace="System.Text.RegularExpressions"/>
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+					string json = File.ReadAllText(ModInfoPath);
+					string pattern = "\"version\": \"((\\\" |[^\"])*)";
+					string replacement = "\"version\": \"" + ModVersion;
+					string output = Regex.Replace(json, pattern, replacement);
+					File.WriteAllText(ModInfoPath, output);
+                ]]>
+			</Code>
+		</Task>
+	</UsingTask>
+
+	<!-- Custom Task for update minimum game version in modinfo.json -->
+	<UsingTask TaskName="UpdateGameVersion"
+			   TaskFactory="CodeTaskFactory"
+			   AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+		<ParameterGroup>
+			<ModInfoPath ParameterType="System.String" Required="true" />
+			<GameVersion ParameterType="System.String" Required="true" />
+		</ParameterGroup>
+		<Task>
+			<Using Namespace="System.IO"/>
+			<Using Namespace="System.Text.RegularExpressions"/>
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+					string json = File.ReadAllText(ModInfoPath);
+					string pattern = "\"game\": \"((\\\" |[^\"])*)";
+					string replacement = "\"game\": \"" + GameVersion;
+					string output = Regex.Replace(json, pattern, replacement);
+					File.WriteAllText(ModInfoPath, output);
+                ]]>
+			</Code>
+		</Task>
+	</UsingTask>
+
+
+	<!-- Collect required mod files for ready to run -->
+	<Target Name="BeforeRun">
+		<RemoveDir Directories="$(ModsPath)/$(TargetName)" />
+
+		<Copy SourceFiles="$(ModInfoPath)" DestinationFolder="$(ModsPath)/$(TargetName)" />
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModsPath)/$(TargetName)" />
+		<Copy SourceFiles="$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(ModsPath)/$(TargetName)" />
+	</Target>
+
+	<!-- Creates .zip in Releases -->
+	<Target Name="MakeZip">
+
+		<!-- Update modinfo.json if ModInfoFirst disabled -->
+		<UpdateModVersion Condition="!$(ModinfoFirst)" ModInfoPath="$(ModInfoPath)" ModVersion="$(Version)" />
+		<UpdateGameVersion Condition="!$(ModinfoFirst)" ModInfoPath="$(ModInfoPath)" GameVersion="$(MinGameVersion)" />
+
+		<!-- Use props from modinfo.json if ModInfoFirst enabled -->
+		<GetModVersion Condition="$(ModinfoFirst)" ModInfoPath="$(ModInfoPath)">
+			<Output TaskParameter="ModVersion" PropertyName="Version" />
+		</GetModVersion>
+		<GetGameVersion Condition="$(ModinfoFirst)" ModInfoPath="$(ModInfoPath)">
+			<Output TaskParameter="GameVersion" PropertyName="MinGameVersion" />
+		</GetGameVersion>
+
+		<!-- Move assets to mod folder -->
+		<MakeDir Directories="$(AssetsPath)" />
+		<ItemGroup>
+			<Assets Include="$(AssetsPath)/**" />
+		</ItemGroup>
+		<Copy SourceFiles="@(Assets)" DestinationFolder="$(ModsPath)/$(TargetName)/assets/%(RecursiveDir)" />
+
+		<!-- Optional additional files -->
+		<Copy SourceFiles="@(IncludeFiles)" DestinationFolder="$(ModsPath)/$(TargetName)" ContinueOnError="true" />
+
+		<MakeDir Directories="$(ReleasesPath)" />
+		<ZipDirectory DestinationFile="$(ReleasesPath)/$(TargetName)_v$(RunGameVersion)_v$(Version).zip"
+					  SourceDirectory="$(ModsPath)/$(TargetName)"
+					  Overwrite="true" />
+
+		<Message Text="Created release $(TargetName)_v$(RunGameVersion)_v$(Version).zip" Importance="High" />
+	</Target>
+</Project>

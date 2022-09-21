@@ -2,84 +2,47 @@
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
 		<Configurations>Debug;Release;Publish</Configurations>
-		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<NoWarn>CS1591</NoWarn>
-		<WarningLevel>4</WarningLevel>
-		<LangVersion>5</LangVersion>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<LangVersion>latest</LangVersion>
+		<!--Nullable>enable</Nullable-->
 	</PropertyGroup>
+	<Choose>
+		<When Condition=" '$(Configuration)' == 'Debug' ">
+			<PropertyGroup>
+				<DebugSymbols>true</DebugSymbols>
+				<DebugType>full</DebugType>
+				<Optimize>false</Optimize>
+			</PropertyGroup>
+		</When>
+		<Otherwise>
+			<PropertyGroup>
+				<DebugSymbols>true</DebugSymbols>
+				<DebugType>pdbonly</DebugType>
+				<Optimize>true</Optimize>
+			</PropertyGroup>
+		</Otherwise>
+	</Choose>
 
-	<PropertyGroup Condition=" '$(Configuration)' != 'Debug' ">
-		<DefaultItemExcludes>$(DefaultItemExcludes);modtools/**</DefaultItemExcludes>
-	</PropertyGroup>
-
+	<!-- Warning settings -->
 	<PropertyGroup>
-		<MinGameVersion>1.17.0</MinGameVersion>
-		<RunGameVersion>1.17.3</RunGameVersion>
+		<WarningLevel>4</WarningLevel>
+		<!-- Disable Missing XML comment for publicly visible type or member -->
+		<NoWarn>CS1591</NoWarn>
 	</PropertyGroup>
 
-	<ItemGroup Label="Game Refs">
-		<Reference Include="VintagestoryAPI">
-			<HintPath>$(VINTAGE_STORY)/$(MinGameVersion)/VintagestoryAPI.dll</HintPath>
-		</Reference>
-		<Reference Include="VintagestoryLib">
-			<HintPath>$(VINTAGE_STORY)/$(MinGameVersion)/VintagestoryLib.dll</HintPath>
-		</Reference>
-		<Reference Include="VSEssentials">
-			<HintPath>$(VINTAGE_STORY)/$(MinGameVersion)/Mods/VSEssentials.dll</HintPath>
-		</Reference>
-		<Reference Include="VSCreativeMod">
-			<HintPath>$(VINTAGE_STORY)/$(MinGameVersion)/Mods/VSCreativeMod.dll</HintPath>
-		</Reference>
-		<Reference Include="VSSurvivalMod">
-			<HintPath>$(VINTAGE_STORY)/$(MinGameVersion)/Mods/VSSurvivalMod.dll</HintPath>
-		</Reference>
-		<Reference Include="0Harmony">
-			<HintPath>$(VINTAGE_STORY)/$(MinGameVersion)/Lib/0Harmony.dll</HintPath>
-		</Reference>
-		<Reference Include="Newtonsoft.Json">
-			<HintPath>$(VINTAGE_STORY)/$(MinGameVersion)/Lib/Newtonsoft.Json.dll</HintPath>
-		</Reference>
-		<Reference Include="protobuf-net">
-			<HintPath>$(VINTAGE_STORY)/$(MinGameVersion)/Lib/protobuf-net.dll</HintPath>
-		</Reference>
-		<Reference Include="cairo-sharp">
-			<HintPath>$(VINTAGE_STORY)/$(MinGameVersion)/Lib/cairo-sharp.dll</HintPath>
-		</Reference>
+	<!-- Game API, engine, libraries and vanilla mods reference -->
+	<ItemGroup>
+		<Reference Include="$(VINTAGE_STORY)/$(MinGameVersion)/*.dll" />
+		<Reference Include="$(VINTAGE_STORY)/$(MinGameVersion)/Lib/*.dll" />
+		<Reference Include="$(VINTAGE_STORY)/$(MinGameVersion)/Mods/*.dll" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Remove="mods/**" />
+		<ProjectReference Include="..\CommonLib\CommonLib.csproj" />
 	</ItemGroup>
 
-	<Target Name="CollectMod" AfterTargets="PostBuildEvent">
-		<RemoveDir Directories="mods/$(TargetName)" />
-
-		<Copy SourceFiles="modinfo.json" DestinationFolder="mods/$(TargetName)" />
-		<Copy SourceFiles="modicon.png" DestinationFolder="mods/$(TargetName)" ContinueOnError="true" />
-		<Copy SourceFiles="README.md" DestinationFolder="mods/$(TargetName)" />
-		<Copy SourceFiles="LICENSE" DestinationFolder="mods/$(TargetName)" />
-	</Target>
-
-	<Target Name="DllBuild" AfterTargets="CollectMod" Condition=" '$(Configuration)' == 'Debug' ">
-		<Copy SourceFiles="$(TargetPath)" DestinationFolder="mods/$(TargetName)" />
-		<Copy SourceFiles="$(TargetDir)/$(TargetName).pdb" DestinationFolder="mods/$(TargetName)" />
-	</Target>
-
-	<Target Name="SourceBuild" AfterTargets="CollectMod" Condition=" '$(Configuration)' != 'Debug' ">
-		<ItemGroup>
-			<Src Include="src/**" />
-		</ItemGroup>
-		<Copy SourceFiles="@(Src)" DestinationFolder="mods/$(TargetName)/src/%(RecursiveDir)" />
-	</Target>
-
-	<Target Name="ZipMod" AfterTargets="CollectMod" Condition=" '$(Configuration)' == 'Publish' ">
-		<ItemGroup>
-			<Res Include="assets/**" />
-		</ItemGroup>
-		<Copy SourceFiles="@(Res)" DestinationFolder="mods/$(TargetName)/assets/%(RecursiveDir)" />
-
-		<MakeDir Directories="releases" />
-		<ZipDirectory DestinationFile="releases/$(TargetName)_v$(RunGameVersion)_v.zip" SourceDirectory="mods/$(TargetName)" Overwrite="true" />
-	</Target>
+	<Import Project="ModBuilder.props" />
+	<Import Project="ModBuilder.targets" />
+	<Import Project="Mod.props" />
 </Project>

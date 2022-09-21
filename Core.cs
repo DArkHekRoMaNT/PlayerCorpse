@@ -1,3 +1,5 @@
+using CommonLib.UI;
+using CommonLib.Utils;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 
@@ -18,7 +20,7 @@ namespace PlayerCorpse
 
         public override void Start(ICoreAPI api)
         {
-            Config.Current = api.LoadOrCreateConfig<Config>(Mod.Info.ModID + ".json");
+            Config.Current = api.LoadOrCreateConfig<Config>(Mod.Info.ModID + ".json", ModLogger);
 
             api.World.Config.SetBool(Mod.Info.ModID + ":CorpseCompassEnabled", Config.Current.CorpseCompassEnabled.Value);
 

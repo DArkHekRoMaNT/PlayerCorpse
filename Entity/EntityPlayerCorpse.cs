@@ -1,4 +1,6 @@
-using System;
+using CommonLib.Extensions;
+using CommonLib.UI;
+using CommonLib.Utils;
 using System.IO;
 using System.Text;
 using Vintagestory.API.Client;
@@ -188,7 +190,7 @@ namespace PlayerCorpse
             Core.ModLogger.Notification(msg);
             if (Config.Current.DebugMode.Value)
             {
-                Api.SendMessageAll(msg);
+                Api.SendMessageToAll(msg);
             }
 
             Die();
@@ -207,7 +209,7 @@ namespace PlayerCorpse
             Core.ModLogger.Notification(msg);
             if (Config.Current.DebugMode.Value)
             {
-                Api.SendMessageAll(msg);
+                Api.SendMessageToAll(msg);
             }
 
             base.Die(reason, damageSourceForDeath);

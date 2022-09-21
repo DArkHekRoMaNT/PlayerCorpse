@@ -1,0 +1,16 @@
+﻿<Project>
+	<PropertyGroup>
+		
+		<!-- Mod Version -->
+		<Version>1.0.0</Version>
+		
+		<!-- Mod authors (comma separator). Doesn't overwrite values in modinfo.json, only used for dll -->
+		<Authors>DArkHekRoMaNT</Authors>
+		
+		<!-- Minimum game version is used for compiling, 
+		 and running is used to run the test world, server, etc -->
+		<MinGameVersion>1.17.0</MinGameVersion>
+		<RunGameVersion>1.17.3</RunGameVersion>
+
+	</PropertyGroup>
+</Project>

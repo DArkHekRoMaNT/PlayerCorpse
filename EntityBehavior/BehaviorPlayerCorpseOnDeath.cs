@@ -1,3 +1,5 @@
+using CommonLib.Extensions;
+using CommonLib.Utils;
 using System;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
@@ -132,9 +134,13 @@ namespace PlayerCorpse
                     {
                         api.World.SpawnEntity(corpseEntity);
 
-                        string log = string.Format("Created {0} at {1}, id {2}", corpseEntity.GetName(), corpseEntity.SidedPos.XYZ.RelativePos(api), corpseEntity.EntityId);
+                        string log = string.Format("Created {0} at {1}, id {2}",
+                                                   corpseEntity.GetName(),
+                                                   corpseEntity.SidedPos.XYZ.RelativePos(api),
+                                                   corpseEntity.EntityId);
+
                         Core.ModLogger.Notification(log);
-                        if (Config.Current.DebugMode.Value) api.SendMessageAll(log);
+                        if (Config.Current.DebugMode.Value) api.SendMessageToAll(log);
                     }
                     else
                     {

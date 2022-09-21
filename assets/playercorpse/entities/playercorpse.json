@@ -6,7 +6,11 @@
   "client": {
     "renderer": "Shape",
     "shape": { "base": "game:block/bone/carcass/humanoid2" },
-    "behaviors": [{ "code": "passivephysics" }, { "code": "interpolateposition" }, { "code": "floatupwhenstuck" }]
+    "behaviors": [
+      { "code": "passivephysics" },
+      { "code": "interpolateposition" },
+      { "code": "floatupwhenstuck" }
+    ]
   },
   "server": {
     "behaviors": [

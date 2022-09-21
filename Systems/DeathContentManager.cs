@@ -1,3 +1,4 @@
+using CommandLine;
 using CommonLib.Extensions;
 using CommonLib.Utils;
 using PlayerCorpse.Entities;
@@ -32,8 +33,8 @@ namespace PlayerCorpse.Systems
                 return;
             }
 
-            var corpseEntity = CreateCorpse(byPlayer);
-            if (!corpseEntity.Inventory.Empty)
+            var corpseEntity = CreateCorpseEntity(byPlayer);
+            if (corpseEntity?.Inventory != null && !corpseEntity.Inventory.Empty)
             {
                 if (Config.Current.CreateWaypoint.Value == "always")
                 {
@@ -71,7 +72,7 @@ namespace PlayerCorpse.Systems
             }
         }
 
-        private EntityPlayerCorpse CreateCorpse(IServerPlayer byPlayer)
+        private EntityPlayerCorpse CreateCorpseEntity(IServerPlayer byPlayer)
         {
             var entityType = sapi.World.GetEntityType(new AssetLocation(Core.ModId, "playercorpse"));
 
@@ -87,16 +88,32 @@ namespace PlayerCorpse.Systems
 
             corpse.Inventory = TakeContentFromPlayer(byPlayer);
 
+            // Fix dancing corpse issue
+            Vec3i floorPos = TryFindFloor(byPlayer.Entity.ServerPos.XYZInt);
+
             // Attempt to align the corpse to the center of the block so that it does not crawl higher
-            corpse.ServerPos.SetPos(new Vec3d(
-                (int)byPlayer.Entity.ServerPos.X + 0.5f,
-                (int)byPlayer.Entity.ServerPos.Y + 0f, // changed from 1 to 0 for fix dancing corpse issue
-                (int)byPlayer.Entity.ServerPos.Z + 0.5f
-            ));
-            corpse.Pos.SetFrom(corpse.ServerPos);
+            Vec3d pos = floorPos.ToVec3d().Add(.5, 0, .5);
+
+            corpse.ServerPos.SetPos(pos);
+            corpse.Pos.SetPos(pos);
             corpse.World = sapi.World;
 
             return corpse;
+        }
+
+        /// <summary> Try to find the nearest block with collision below </summary>
+        private Vec3i TryFindFloor(Vec3i pos)
+        {
+            for (int i = pos.Y; i > 0; i--)
+            {
+                var block = sapi.World.BlockAccessor.GetBlock(pos.X, i, pos.Z);
+                if (block.BlockId != 0 && block.CollisionBoxes?.Length > 0)
+                {
+                    return new Vec3i(pos.X, i + 1, pos.Z);
+                }
+            }
+
+            return pos;
         }
 
         private InventoryGeneric TakeContentFromPlayer(IServerPlayer byPlayer)

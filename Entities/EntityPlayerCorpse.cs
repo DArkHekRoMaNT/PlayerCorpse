@@ -147,7 +147,7 @@ namespace PlayerCorpse.Entities
 
             if (packetid == 141325)
             {
-                if (data.Length > 0 && data[0] > SecondsPassed)
+                if (data?.Length > 0 && data[0] > SecondsPassed)
                 {
                     SecondsPassed = data[0];
                 }

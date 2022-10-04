@@ -1,8 +1,6 @@
-using CommonLib.UI;
 using CommonLib.Utils;
 using PlayerCorpse.Entities;
 using PlayerCorpse.Items;
-using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 
 namespace PlayerCorpse

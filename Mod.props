@@ -1,8 +1,8 @@
-﻿<Project>
+<Project>
 	<PropertyGroup>
 		
 		<!-- Mod Version -->
-		<Version>1.4.2</Version>
+		<Version>1.5.0</Version>
 		
 		<!-- Mod authors (comma separator). Doesn't overwrite values in modinfo.json, only used for dll -->
 		<Authors>DArkHekRoMaNT</Authors>

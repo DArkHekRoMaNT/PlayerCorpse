@@ -38,9 +38,7 @@
 		<Reference Include="$(VINTAGE_STORY)/$(MinGameVersion)/Mods/*.dll" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\CommonLib\CommonLib.csproj" />
-	</ItemGroup>
+	<Import Project="..\CommonLib\CommonLib.projitems" Label="Shared" />
 
 	<Import Project="ModBuilder.props" />
 	<Import Project="ModBuilder.targets" />

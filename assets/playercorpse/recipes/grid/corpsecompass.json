@@ -1,10 +1,18 @@
-﻿{
+{
   "enabled": true,
-  "ingredientPattern": "_B_,BBB,_B_",
+  "ingredientPattern": "GBG,BTB,GBG",
   "ingredients": {
     "B": {
       "type": "item",
       "code": "game:bone"
+    },
+    "T": {
+      "type": "item",
+      "code": "game:gear-temporal"
+    },
+    "G": {
+      "type": "item",
+      "code": "game:gear-rusty"
     }
   },
   "width": 3,

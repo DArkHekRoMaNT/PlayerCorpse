@@ -10,6 +10,8 @@
 
   "item-corpsecompass": "Corpse Compass",
   "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Usage",
-  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Helps to find your corpses. Server admins can also check the server-main.txt log for the exact coordinates of all corpses (uses with Sneak)<br/><br/><b>Only works for the current column of chunks, by default it is 32x256x32 blocks</b>",
-  "corpsecompass-corpses-not-found": "No your corpses found within this chunks column"
+  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Helps to find your corpses. Server admins can also check the server-main.txt log for the exact coordinates of all corpses (uses in Creative)<br/><br/><b>Searches in 7x7 chunks around player (224x256x224 blocks by default)</b>",
+  "corpsecompass-corpses-not-found": "No your corpses found within this chunks column",
+  "corpsecompass-target-set": "Target set on the last corpse",
+  "corpsecompass-no-last-corpse": "Last corpse not found"
 }

@@ -8,6 +8,6 @@
 
   "item-corpsecompass": "Компас для трупов",
   "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Использование",
-  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Помогает найти ваши трупы. Администраторы серверов также могут проверить точные координаты всех трупов в журнале server-main.txt (используйте с Shift)<br/><br/><b>Работает только для текущего столба чанков, по умолчаню это 32х256х32 блоков</b>",
+  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Помогает найти ваши трупы. Администраторы серверов также могут проверить точные координаты всех трупов в журнале server-main.txt (используйте в креативе)<br/><br/><b>Ищет в 7x7 чанках вокруг игрока (224x256x224 блоков по умолчанию)</b>",
   "corpsecompass-corpses-not-found": "В этом столбе чанков ваши трупы не найдены"
 }

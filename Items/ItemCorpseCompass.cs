@@ -15,6 +15,7 @@ namespace PlayerCorpse.Items
     public class ItemCorpseCompass : Item
     {
         public const long SearchCooldown = 5000;
+        public const long OffHandSearchCooldown = 10000;
         public const long OffHandParticleEmitCooldown = 250;
         public const int SearchRadius = 3;
 
@@ -64,6 +65,13 @@ namespace PlayerCorpse.Items
         {
             if (byEntity.LeftHandItemSlot == slot)
             {
+                long lastCorpseSearch = slot.Itemstack.TempAttributes.GetLong("lastCorpseSearch", 0);
+                if (lastCorpseSearch + OffHandSearchCooldown < api.World.ElapsedMilliseconds)
+                {
+                    UpdateNearestCorpse(byEntity, slot);
+                    slot.Itemstack.TempAttributes.SetLong("lastCorpseSearch", api.World.ElapsedMilliseconds);
+                }
+
                 long lastEmit = slot.Itemstack.TempAttributes.GetLong("lastEmitParticlesOffHand", 0);
                 if (lastEmit + OffHandParticleEmitCooldown < byEntity.World.ElapsedMilliseconds)
                 {

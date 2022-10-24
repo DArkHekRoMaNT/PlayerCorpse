@@ -1,6 +1,23 @@
 {
   "code": "corpsecompass",
   "class": "ItemCorpseCompass",
+  "behaviors": [
+    {
+      "name": "GroundStorable",
+      "properties": {
+        "layout": "Quadrants",
+        "placeRemoveSound": "sounds/player/build",
+        "collisionBox": {
+          "x1": 0,
+          "y1": 0,
+          "z1": 0,
+          "x2": 1,
+          "y2": 0.3125,
+          "z2": 1
+        }
+      }
+    }
+  ],
   "shape": { "base": "item/corpsecompass" },
   "creativeinventory": {
     "general": [ "*" ],
@@ -10,6 +27,39 @@
   "textures": {
     "compass": { "base": "item/compass" },
     "symbol": { "base": "item/symbol" }
+  },
+
+  "attributes": {
+    "shelvable": true,
+    "onDisplayTransform": {
+      "translation": {
+        "x": 0,
+        "y": -0.16,
+        "z": 0
+      },
+      "scale": 0.66
+    },
+    "rackable": true,
+    "toolrackTransform": {
+      "translation": {
+        "x": 0,
+        "y": -0.55,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": -90,
+        "z": 180
+      }
+    },
+    "groundStorageTransform": {
+      "translation": {
+        "x": 0,
+        "y": -0.165,
+        "z": 0
+      },
+      "scale": 0.66
+    }
   },
   "storageFlags": 257,
   "heldTpUseAnimation": "",
@@ -66,6 +116,25 @@
       "x": -20,
       "y": -95,
       "z": 18
-    }
+    },
+    "scale": 0.33
+  },
+  "groundTransform": {
+    "translation": {
+      "x": 0,
+      "y": 0.25,
+      "z": 0
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "origin": {
+      "x": 0.5,
+      "y": 0.5,
+      "z": 0.5299
+    },
+    "scale": 2.39
   }
 }

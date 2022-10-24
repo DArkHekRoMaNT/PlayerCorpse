@@ -44,15 +44,20 @@ namespace PlayerCorpse.Items
 
         public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handling)
         {
-            long lastCorpseSearch = slot.Itemstack.TempAttributes.GetLong("lastCorpseSearch", 0);
-            if (lastCorpseSearch + SearchCooldown < api.World.ElapsedMilliseconds)
-            {
-                UpdateNearestCorpse(byEntity, slot);
-                slot.Itemstack.TempAttributes.SetLong("lastCorpseSearch", api.World.ElapsedMilliseconds);
-                handling = EnumHandHandling.PreventDefault;
-            }
+            base.OnHeldInteractStart(slot, byEntity, blockSel, entitySel, firstEvent, ref handling);
 
-            EmitParticles(slot, byEntity);
+            if (handling == EnumHandHandling.NotHandled)
+            {
+                long lastCorpseSearch = slot.Itemstack.TempAttributes.GetLong("lastCorpseSearch", 0);
+                if (lastCorpseSearch + SearchCooldown < api.World.ElapsedMilliseconds)
+                {
+                    UpdateNearestCorpse(byEntity, slot);
+                    slot.Itemstack.TempAttributes.SetLong("lastCorpseSearch", api.World.ElapsedMilliseconds);
+                    handling = EnumHandHandling.PreventDefault;
+                }
+
+                EmitParticles(slot, byEntity);
+            }
         }
 
         public override void OnHeldIdle(ItemSlot slot, EntityAgent byEntity)

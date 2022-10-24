@@ -73,7 +73,7 @@ namespace PlayerCorpse
             DebugMode = new Part<bool>(false, "[true, false]");
             FreeCorpseAfterTime = new Part<int>(240, "[Any integer] (0 - always, below zero - never), makes corpses available to everyone after N in-game hours");
             CorpseCollectionTime = new Part<float>(1, "[float], Corpse collection time in seconds");
-            CorpseCompassEnabled = new Part<bool>(true);
+            CorpseCompassEnabled = new Part<bool>(true, "If you set it to false, all already existing compasses will turn into an unknown item.");
         }
     }
 }

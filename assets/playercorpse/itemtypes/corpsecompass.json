@@ -1,4 +1,5 @@
 {
+  "enabled": true,
   "code": "corpsecompass",
   "class": "ItemCorpseCompass",
   "behaviors": [

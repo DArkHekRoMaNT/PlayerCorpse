@@ -19,6 +19,8 @@ namespace PlayerCorpse.Systems
 
         public override bool ShouldLoad(EnumAppSide forSide) => forSide == EnumAppSide.Server;
 
+        public override double ExecuteOrder() => 0.099;
+
         public override void StartServerSide(ICoreServerAPI api)
         {
             sapi = api;

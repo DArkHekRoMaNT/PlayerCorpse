@@ -3,7 +3,7 @@
   "modid": "playercorpse",
   "name": "Player Corpse",
   "authors": [ "DArkHekRoMaNT" ],
-  "version": "1.5.1",
+  "version": "1.5.2",
   "dependencies": {
     "game": "1.17.8"
   },

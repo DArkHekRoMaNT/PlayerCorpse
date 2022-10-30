@@ -1,6 +1,5 @@
 using CommonLib.Extensions;
 using CommonLib.Utils;
-using OpenTK.Graphics.OpenGL;
 using PlayerCorpse.Entities;
 using System;
 using System.Collections.Generic;

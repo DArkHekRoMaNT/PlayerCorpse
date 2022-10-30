@@ -1,4 +1,3 @@
-using CommandLine;
 using CommonLib.Extensions;
 using CommonLib.Utils;
 using PlayerCorpse.Entities;
@@ -6,6 +5,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Vintagestory.API.Common;
+using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
@@ -19,12 +19,18 @@ namespace PlayerCorpse.Systems
 
         public override bool ShouldLoad(EnumAppSide forSide) => forSide == EnumAppSide.Server;
 
-        public override double ExecuteOrder() => 0.099;
-
         public override void StartServerSide(ICoreServerAPI api)
         {
             sapi = api;
-            api.Event.PlayerDeath += OnPlayerDeath;
+            api.Event.OnEntityDeath += OnEntityDeath;
+        }
+
+        private void OnEntityDeath(Entity entity, DamageSource damageSource)
+        {
+            if (entity is EntityPlayer entityPlayer)
+            {
+                OnPlayerDeath((IServerPlayer)entityPlayer.Player, damageSource);
+            }
         }
 
         private void OnPlayerDeath(IServerPlayer byPlayer, DamageSource damageSource)
@@ -36,7 +42,7 @@ namespace PlayerCorpse.Systems
             }
 
             var corpseEntity = CreateCorpseEntity(byPlayer);
-            if (corpseEntity?.Inventory != null && !corpseEntity.Inventory.Empty)
+            if (corpseEntity.Inventory != null && !corpseEntity.Inventory.Empty)
             {
                 if (Config.Current.CreateWaypoint.Value == "always")
                 {
@@ -70,6 +76,18 @@ namespace PlayerCorpse.Systems
                 else
                 {
                     corpseEntity.Inventory.DropAll(corpseEntity.Pos.XYZ);
+                }
+            }
+            else
+            {
+                string message = string.Format(
+                    "Inventory is empty, {0}'s corpse not created",
+                    corpseEntity.OwnerName);
+
+                Core.ModLogger.Notification(message);
+                if (Config.Current.DebugMode.Value)
+                {
+                    sapi.SendMessageToAll(message);
                 }
             }
         }

@@ -4,6 +4,7 @@ using PlayerCorpse.Entities;
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
@@ -199,11 +200,16 @@ namespace PlayerCorpse.Systems
             byPlayer.SendMessageAsClient(message, GlobalConstants.AllChatGroups);
         }
 
+        public static string ClearUID(string uid)
+        {
+            return Regex.Replace(uid, "/[^0-9a-zA-Z]+/", "");
+        }
+
         public void SaveDeathContent(InventoryGeneric inventory, IPlayer player)
         {
             ICoreAPI api = player.Entity.Api;
 
-            string localPath = Path.Combine("ModData", api.GetWorldId(), Mod.Info.ModID, player.PlayerUID);
+            string localPath = Path.Combine("ModData", api.GetWorldId(), Mod.Info.ModID, ClearUID(player.PlayerUID));
             string path = api.GetOrCreateDataPath(localPath);
             string[] files = Directory.GetFiles(path).OrderByDescending(f => new FileInfo(f).Name).ToArray();
 
@@ -225,9 +231,12 @@ namespace PlayerCorpse.Systems
             if (Config.Current.MaxDeathContentSavedPerPlayer.Value <= offset)
                 throw new IndexOutOfRangeException("offset is too large or save data disabled");
 
-            string localPath = Path.Combine("ModData", api.GetWorldId(), Mod.Info.ModID, player.PlayerUID);
+            string localPath = Path.Combine("ModData", api.GetWorldId(), Mod.Info.ModID, ClearUID(player.PlayerUID));
             string path = api.GetOrCreateDataPath(localPath);
-            string file = Directory.GetFiles(path).OrderByDescending(f => new FileInfo(f).Name).ToArray().ElementAt(offset);
+            string file = Directory.GetFiles(path)
+                .OrderByDescending(f => new FileInfo(f).Name)
+                .ToArray()
+                .ElementAt(offset);
 
             var tree = new TreeAttribute();
             tree.FromBytes(File.ReadAllBytes(file));

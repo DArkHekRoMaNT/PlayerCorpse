@@ -202,7 +202,7 @@ namespace PlayerCorpse.Systems
 
         public static string ClearUID(string uid)
         {
-            return Regex.Replace(uid, "/[^0-9a-zA-Z]+/", "");
+            return Regex.Replace(uid, "[^0-9a-zA-Z]", "");
         }
 
         public void SaveDeathContent(InventoryGeneric inventory, IPlayer player)

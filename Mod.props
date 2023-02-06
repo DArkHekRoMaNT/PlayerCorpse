@@ -2,15 +2,15 @@
 	<PropertyGroup>
 
 		<!-- Mod Version -->
-		<Version>1.5.5</Version>
+		<Version>1.5.6-rc.1</Version>
 
 		<!-- Mod authors (comma separator). Doesn't overwrite values in modinfo.json, only used for dll -->
 		<Authors>DArkHekRoMaNT</Authors>
 
 		<!-- Minimum game version is used for compiling, 
 		 and running is used to run the test world, server, etc -->
-		<MinGameVersion>1.17.0</MinGameVersion>
-		<RunGameVersion>1.17.9</RunGameVersion>
+		<MinGameVersion>1.17.11-net7</MinGameVersion>
+		<RunGameVersion>1.17.11-net7</RunGameVersion>
 
 	</PropertyGroup>
 </Project>

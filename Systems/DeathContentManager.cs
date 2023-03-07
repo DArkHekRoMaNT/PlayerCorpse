@@ -4,6 +4,7 @@ using PlayerCorpse.Entities;
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
@@ -11,6 +12,7 @@ using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
+using Vintagestory.Client.NoObf;
 
 namespace PlayerCorpse.Systems
 {
@@ -70,7 +72,7 @@ namespace PlayerCorpse.Systems
                     Core.ModLogger.Notification(message);
                     if (Config.Current.DebugMode.Value)
                     {
-                        sapi.SendMessageToAll(message);
+                        sapi.BroadcastMessage(message);
                     }
                 }
                 // Or drop all if corpse creations is disabled
@@ -88,7 +90,7 @@ namespace PlayerCorpse.Systems
                 Core.ModLogger.Notification(message);
                 if (Config.Current.DebugMode.Value)
                 {
-                    sapi.SendMessageToAll(message);
+                    sapi.BroadcastMessage(message);
                 }
             }
         }
@@ -197,7 +199,16 @@ namespace PlayerCorpse.Systems
             var deathTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
             string message = string.Format(format, icon, pos.X, pos.Y, pos.Z, isPinned, color, deathTime);
-            byPlayer.SendMessageAsClient(message, GlobalConstants.AllChatGroups);
+
+            byPlayer.Entity.Api.ChatCommands.ExecuteUnparsed(message, new TextCommandCallingArgs
+            {
+                Caller = new Caller
+                {
+                    Player = byPlayer,
+                    Pos = byPlayer.Entity.Pos.XYZ,
+                    FromChatGroupId = GlobalConstants.CurrentChatGroup
+                }
+            });
         }
 
         public static string ClearUID(string uid)

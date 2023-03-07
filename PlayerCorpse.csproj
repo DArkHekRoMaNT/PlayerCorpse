@@ -1,28 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
-		<Configurations>Debug;Release;Publish</Configurations>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
-	<Choose>
-		<When Condition=" '$(Configuration)' == 'Debug' ">
-			<PropertyGroup>
-				<DebugSymbols>true</DebugSymbols>
-				<DebugType>full</DebugType>
-				<Optimize>false</Optimize>
-			</PropertyGroup>
-		</When>
-		<Otherwise>
-			<PropertyGroup>
-				<DebugSymbols>true</DebugSymbols>
-				<DebugType>pdbonly</DebugType>
-				<Optimize>true</Optimize>
-			</PropertyGroup>
-		</Otherwise>
-	</Choose>
 
 	<!-- Warning settings -->
 	<PropertyGroup>
@@ -31,16 +13,8 @@
 		<NoWarn>CS1591</NoWarn>
 	</PropertyGroup>
 
-	<!-- Game API, engine, libraries and vanilla mods reference -->
 	<ItemGroup>
-		<Reference Include="$(VINTAGE_STORY)/$(MinGameVersion)/*.dll" />
-		<Reference Include="$(VINTAGE_STORY)/$(MinGameVersion)/Lib/*.dll" />
-		<Reference Include="$(VINTAGE_STORY)/$(MinGameVersion)/Mods/*.dll" />
+		<Folder Include="Assets\" />
+		<Folder Include="Mods\" />
 	</ItemGroup>
-
-	<Import Project="..\CommonLib\CommonLib.projitems" Label="Shared" />
-
-	<Import Project="ModBuilder.props" />
-	<Import Project="ModBuilder.targets" />
-	<Import Project="Mod.props" />
 </Project>

@@ -1,0 +1,46 @@
+<!-- ModBuilder v1.0.1 -->
+<Project>
+	<PropertyGroup>
+		<Configurations>Debug;Release;Publish</Configurations>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>pdbonly</DebugType>
+		<Optimize>true</Optimize>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<ReleasesDir>$(MSBuildProjectDirectory)/Releases</ReleasesDir>
+		<ModsDir>$(MSBuildProjectDirectory)/Mods</ModsDir>
+		<AssetsDir>$(MSBuildProjectDirectory)/Assets</AssetsDir>
+		<OutputPath>$(ModsDir)/$(MSBuildProjectName)/</OutputPath>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildProjectDirectory)/Mod.xml" />
+
+	<PropertyGroup>
+		<MinimalGameVersion Condition=" '$(MinimalGameVersion)' == '' ">$(GameVersion)</MinimalGameVersion>
+	</PropertyGroup>
+
+	<!-- Game API, engine, libraries and vanilla mods reference -->
+	<ItemGroup>
+		<Reference Include="$(VINTAGE_STORY)/$(GameVersion)/*.dll">
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="$(VINTAGE_STORY)/$(GameVersion)/Lib/*.dll">
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="$(VINTAGE_STORY)/$(GameVersion)/Mods/*.dll">
+			<Private>false</Private>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="@(IncludeFiles)" CopyToOutputDirectory="Always" />
+	</ItemGroup>
+</Project>

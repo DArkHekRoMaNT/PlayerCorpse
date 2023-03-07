@@ -1,0 +1,154 @@
+<!-- ModBuilder v1.0.2 -->
+<Project>
+	<UsingTask TaskName="CreateModInfo"
+			   TaskFactory="CodeTaskFactory"
+			   AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+		<ParameterGroup>
+			<Name ParameterType="System.String" Required="true" />
+			<ModId ParameterType="System.String" />
+			<Version ParameterType="System.String" Required="true" />
+			<NetworkVersion ParameterType="System.String" />
+			<Description ParameterType="System.String" />
+			<Website ParameterType="System.String" />
+			<Authors ParameterType="System.String" Required="true" />
+			<Contributors ParameterType="System.String" />
+			<Side ParameterType="System.String" />
+			<RequiredOnClient ParameterType="System.Boolean" />
+			<RequiredOnServer ParameterType="System.Boolean" />
+			<GameVersion ParameterType="System.String" Required="true" />
+			<Dependencies ParameterType="Microsoft.Build.Framework.ITaskItem[]" />
+			<OutputPath ParameterType="System.String" Required="true" />
+		</ParameterGroup>
+		<Task>
+			<Using Namespace="System.IO"/>
+			<Using Namespace="System.Text"/>
+			<Using Namespace="System.Text.RegularExpressions"/>
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+					var sb = new StringBuilder();
+					sb.AppendLine("{");
+					sb.AppendLine("\t\"type\": \"code\",");
+					sb.AppendLine("\t\"name\": \"" + Name + "\",");
+
+					if (string.IsNullOrWhiteSpace(ModId))
+					{
+						ModId = Name.ToLower();
+						ModId = Regex.Replace(ModId, "[^a-z0-9]", "");
+					}
+					sb.AppendLine("\t\"modid\": \"" + ModId + "\",");
+					
+					sb.AppendLine("\t\"version\": \"" + Version + "\",");
+
+					if (!string.IsNullOrWhiteSpace(NetworkVersion))
+					{
+						sb.AppendLine("\t\"networkVersion\": \"" + NetworkVersion + "\",");
+					}
+
+					if (!string.IsNullOrWhiteSpace(Description))
+					{
+						sb.AppendLine("\t\"description\": \"" + Description + "\",");
+					}
+
+					if (!string.IsNullOrWhiteSpace(Website))
+					{
+						sb.AppendLine("\t\"website\": \"" + Website + "\",");
+					}
+
+					if (!string.IsNullOrWhiteSpace(Authors))
+					{
+						Authors = string.Join(", ", Authors.Split(',').Select(e => "\"" + e.Trim() + "\""));
+						sb.AppendLine("\t\"authors\": [" + Authors + "],");
+					}
+
+					if (!string.IsNullOrWhiteSpace(Contributors))
+					{
+						Contributors = string.Join(", ", Contributors.Split(',').Select(e => "\"" + e.Trim() + "\""));
+						sb.AppendLine("\t\"contributors\": [" + Contributors + "],");
+					}
+
+					if (!string.IsNullOrWhiteSpace(Side))
+					{
+						sb.AppendLine("\t\"side\": \"" + Side + "\"");
+						if (Side == "Universal" && !(RequiredOnClient && RequiredOnServer))
+						{
+							sb.AppendLine("\t\"requiredOnClient\": " + RequiredOnClient.ToString().ToLower() + ",");
+							sb.AppendLine("\t\"requiredOnServer\": " + RequiredOnServer.ToString().ToLower() + ",");
+						}
+					}
+
+					sb.AppendLine("\t\"dependecies\": {");
+					sb.Append("\t\t\"game\": \"" + GameVersion + "\"");
+					if (Dependencies != null)
+					{
+						foreach (var dependency in Dependencies)
+						{							
+							string modid = dependency.ItemSpec;
+							string version = dependency.GetMetadata("Version");
+							sb.AppendLine(",");
+							sb.Append("\t\t\"" + modid + "\": \"" + version + "\"");
+						}
+					}
+					sb.AppendLine();
+					sb.AppendLine("\t}");
+
+					sb.AppendLine("}");
+
+					if (!Directory.Exists(OutputPath))
+					{
+						Directory.CreateDirectory(OutputPath);
+					}
+					File.WriteAllText(OutputPath + "modinfo.json", sb.ToString());
+                ]]>
+			</Code>
+		</Task>
+	</UsingTask>
+
+	<Target Name="Prepare" AfterTargets="PreBuildEvent">
+		<RemoveDir Directories="$(OutputPath)/assets" />
+
+		<!-- Create modinfo.json -->
+		<CreateModInfo
+			Name="$(Name)"
+			ModId="$(ModId)"
+			Version="$(Version)"
+			NetworkVersion="$(NetworkVersion)"
+			Description="$(Description)"
+			Website="$(Website)"
+			Authors="$(Authors)"
+			Contributors="$(Contributors)"
+			Side="$(Side)"
+			RequiredOnClient="$(RequiredOnClient)"
+			RequiredOnServer="$(RequiredOnServer)"
+			GameVersion="$(MinimalGameVersion)"
+			Dependencies="@(Dependencies)"
+			OutputPath="$(OutputPath)" />
+	</Target>
+
+	<!-- Move assets to output folder -->
+	<Target Name="AddAssets">
+		<ItemGroup>
+			<Assets Include="$(AssetsDir)/**" />
+		</ItemGroup>
+		<MakeDir Directories="$(OutputPath)assets" Condition=" $(Assets) != '' " />
+		<Copy SourceFiles="@(Assets)" DestinationFolder="$(OutputPath)assets/%(RecursiveDir)" />
+	</Target>
+
+	<!-- Creates .zip in Releases -->
+	<Target Name="MakeZip">
+		<MakeDir Directories="$(ReleasesDir)" />
+		<ZipDirectory DestinationFile="$(ReleasesDir)/$(TargetName)_v$(GameVersion)_v$(Version).zip"
+					  SourceDirectory="$(OutputPath)"
+					  Overwrite="true" />
+		<Message Text="Created release $(TargetName)_v$(GameVersion)_v$(Version).zip" Importance="High" />
+	</Target>
+
+	<!-- Call it by external tool for package mod -->
+	<Target Name="PackageMod" DependsOnTargets="Restore;Build;AddAssets;MakeZip"/>
+
+	<!-- Build in Publish mode for package mod -->
+	<Target Name="PackageModIfPublish"
+			AfterTargets="PostBuildEvent"
+			Condition=" '$(Configuration)' == 'Publish'">
+		<CallTarget Targets="AddAssets;MakeZip" />
+	</Target>
+</Project>

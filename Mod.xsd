@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema version="1.0.1"
+           attributeFormDefault="unqualified"
+           elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:simpleType name="side" final="restriction" >
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Universal" />
+      <xs:enumeration value="Client" />
+      <xs:enumeration value="Server" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="version" final="restriction" >
+    <xs:annotation>
+      <xs:documentation>
+        (must follow SemVer https://semver.org/,
+        allowed pre-prelease names - rc, pre, dev)
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="^[0-9]+\.[0-9]+\.[0-9]+(\-(rc|pre|dev).[0-9]+)?$"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="modid" final="restriction" >
+    <xs:annotation>
+      <xs:documentation>
+        (must only contain lowercase letters and numbers; no special chars, whitespaces, uppercase letters, etc)
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="^[a-z0-9]*$"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Project">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="PropertyGroup">
+          <xs:complexType>
+            <xs:annotation>
+              <xs:documentation xml:lang="en">
+                XML Mod Info. Used to generate modinfo.json and compile
+              </xs:documentation>
+            </xs:annotation>
+            <xs:all>
+              <xs:element minOccurs="1" name="Name" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="en">
+                    The name of this mod
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="ModId" type="modid">
+                <xs:annotation>
+                  <xs:documentation xml:lang="en">
+                    The mod id (domain) of this mod.
+                    Must only contain lowercase letters and numbers. No special chars, whitespaces, uppercase letters, etc. allowed
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="1" name="Version" type="version">
+                <xs:annotation>
+                  <xs:documentation xml:lang="en">
+                    Version of this mod (used for dependency resolution)
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="NetworkVersion" type="version">
+                <xs:annotation>
+                  <xs:documentation xml:lang="en">
+                    The network version of this mod.
+                    Change this number when a user that has an older version of your mod should not be allowed to connected to server with a newer version.
+                    Default value is the version
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="Description" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="en">
+                    A short description of what this mod does
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="Website" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="en">
+                    Location of the website or project site of this mod
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="1" name="Authors" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="en">
+                    Names of people working on this mod (separated by comma)
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="Contributors" type="xs:string">
+                <xs:annotation>
+                  <xs:documentation xml:lang="en">
+                    Names of people contributing to this mod (separated by comma)
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="Side" type="side" default="Universal">
+                <xs:annotation>
+                  <xs:documentation xml:lang="en">
+                    Which side(s) this mod runs on. Can be "Server", "Client" or "Universal". Default value = "Universal"
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="RequiredOnClient" type="xs:boolean" default="true">
+                <xs:annotation>
+                  <xs:documentation xml:lang="en">
+                    If set to false and the mod is universal, clients don't need the mod to join. Default value = true
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="RequiredOnServer" type="xs:boolean" default="true">
+                <xs:annotation>
+                  <xs:documentation xml:lang="en">
+                    If set to false and the mod is universal, the mod is not disabled if it's not present on the server. Default value = true
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="0" name="MinimalGameVersion" type="version">
+                <xs:annotation>
+                  <xs:documentation xml:lang="en">
+                    Minimum game version is used for compiling and dependencies. If you not set it, will be used GameVersion
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element minOccurs="1" name="GameVersion" type="version">
+                <xs:annotation>
+                  <xs:documentation xml:lang="en">
+                    This game version is used for run the test world, server, etc and compiling if you not set MinimalGameVersion
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:all>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ItemGroup">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="Dependencies">
+                <xs:complexType>
+                  <xs:annotation>
+                    <xs:documentation xml:lang="en">
+                      List of mods (and versions) this mod depends on.
+                      The game uses SemVer to compare using logic described here: https://semver.org/, so for example 1.15.0 > 1.15.0-rc.3 > 1.15.0-rc.2
+                      For example, if you set your mod to have a dependency of "game": "1.15.0-rc.2", it will be compatible with that version and all versions released at a later date.
+                      You can set the value to an empty string or an asterisk ("game": "*") to allow compatibility with all versions
+                    </xs:documentation>
+                  </xs:annotation>
+                  <xs:sequence minOccurs="0">
+                    <xs:element name="Version" type="version" />
+                  </xs:sequence>
+                  <xs:attribute name="Include" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element maxOccurs="unbounded" name="IncludeFiles">
+                <xs:complexType>
+                  <xs:annotation>
+                    <xs:documentation xml:lang="en">
+                      Add your other files here if you want to include them in the final mod.
+                      For example modicon.png, LICENSE or README.md
+                    </xs:documentation>
+                  </xs:annotation>
+                  <xs:attribute name="Include" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

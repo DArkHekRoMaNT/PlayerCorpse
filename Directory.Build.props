@@ -1,4 +1,4 @@
-<!-- ModBuilder v1.0.1 -->
+<!-- ModBuilder v1.0.2 -->
 <Project>
 	<PropertyGroup>
 		<Configurations>Debug;Release;Publish</Configurations>
@@ -38,6 +38,11 @@
 		<Reference Include="$(VINTAGE_STORY)/$(GameVersion)/Mods/*.dll">
 			<Private>false</Private>
 		</Reference>
+	</ItemGroup>
+
+	<!-- Include dlls from additional mods -->
+	<ItemGroup>
+		<Reference Include="$(ModsDir)/**/*.dll" Exclude="$(OutputPath)*.dll" />
 	</ItemGroup>
 
 	<ItemGroup>

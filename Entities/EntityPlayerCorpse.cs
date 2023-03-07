@@ -228,7 +228,7 @@ namespace PlayerCorpse.Entities
             Core.ModLogger.Notification(msg);
             if (Config.Current.DebugMode.Value)
             {
-                Api.SendMessageToAll(msg);
+                Api.BroadcastMessage(msg);
             }
 
             Die();
@@ -251,13 +251,13 @@ namespace PlayerCorpse.Entities
             Core.ModLogger.Notification(msg);
             if (Config.Current.DebugMode.Value)
             {
-                Api.SendMessageToAll(msg);
+                Api.BroadcastMessage(msg);
             }
 
             base.Die(reason, damageSourceForDeath);
         }
 
-        public override void OnEntityDespawn(EntityDespawnReason despawn)
+        public override void OnEntityDespawn(EntityDespawnData despawn)
         {
             base.OnEntityDespawn(despawn);
 
@@ -265,7 +265,6 @@ namespace PlayerCorpse.Entities
             {
                 interactRingRenderer.CircleVisible = false;
             }
-
         }
 
         public override void ToBytes(BinaryWriter writer, bool forClient)

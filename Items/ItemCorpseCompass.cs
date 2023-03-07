@@ -155,13 +155,16 @@ namespace PlayerCorpse.Items
         {
             foreach (IServerChunk chunk in GetAllChunksAround(radius, pos))
             {
-                foreach (var entity in chunk.Entities)
+                if (chunk.Entities != null)
                 {
-                    if (entity is EntityPlayerCorpse corpseEntity)
+                    foreach (var entity in chunk.Entities)
                     {
-                        if (playerUID == null || corpseEntity.OwnerUID == playerUID)
+                        if (entity is EntityPlayerCorpse corpseEntity)
                         {
-                            yield return corpseEntity;
+                            if (playerUID == null || corpseEntity.OwnerUID == playerUID)
+                            {
+                                yield return corpseEntity;
+                            }
                         }
                     }
                 }

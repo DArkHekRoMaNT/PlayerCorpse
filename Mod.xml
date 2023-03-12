@@ -1,4 +1,4 @@
-<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema Mod.xsd">
+<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema https://raw.githubusercontent.com/DArkHekRoMaNT/VSMods/master/Mod.xsd">
 	<PropertyGroup>
 		<Name>Player Corpse</Name>
 		<ModId>playercorpse</ModId>
@@ -9,7 +9,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Dependencies Include="commonlib">
-			<Version>1.0.1</Version>
+			<Version>1.0.3</Version>
 		</Dependencies>
 
 		<!-- IncludeFiles Include="modicon.png" /-->

@@ -1,4 +1,4 @@
-﻿using CommonLib.Extensions;
+using CommonLib.Extensions;
 using CommonLib.Utils;
 using System.IO;
 using System.Linq;

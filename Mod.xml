@@ -4,7 +4,7 @@
 		<ModId>playercorpse</ModId>
 		<Version>1.6.0-rc.1</Version>
 		<Authors>DArkHekRoMaNT</Authors>
-		<GameVersion>1.18.0-pre.5</GameVersion>
+		<GameVersion>1.18.0-rc.1</GameVersion>
 		<Website>https://github.com/darkhekromant/PlayerCorpse</Website>
 	</PropertyGroup>
 	<ItemGroup>

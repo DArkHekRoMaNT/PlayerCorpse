@@ -21,9 +21,9 @@ namespace PlayerCorpse.Systems
         {
             sapi = api;
             api.RegisterCommand("returnthings",
-                "[" + Core.ModId + "] Returns things losing on last death", ReturnThingsHelp,
+                "[" + Constants.ModId + "] Returns things losing on last death", ReturnThingsHelp,
                 ReturnThingsCommand,
-                Config.Current.NeedPrivilegeForReturnThings.Value
+                Core.Config.NeedPrivilegeForReturnThings
             );
         }
 
@@ -55,7 +55,7 @@ namespace PlayerCorpse.Systems
                     return;
                 }
 
-                StringBuilder str = new StringBuilder();
+                var str = new StringBuilder();
                 for (int i = 0; i < files.Length; i++)
                 {
                     str.AppendLine(i + ". " + Path.GetFileName(files[i]));

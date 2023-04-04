@@ -4,7 +4,6 @@ using PlayerCorpse.Entities;
 using System;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
@@ -12,19 +11,18 @@ using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
-using Vintagestory.Client.NoObf;
 
 namespace PlayerCorpse.Systems
 {
     public class DeathContentManager : ModSystem
     {
-        private ICoreServerAPI sapi = null!;
+        private ICoreServerAPI _sapi = null!;
 
         public override bool ShouldLoad(EnumAppSide forSide) => forSide == EnumAppSide.Server;
 
         public override void StartServerSide(ICoreServerAPI api)
         {
-            sapi = api;
+            _sapi = api;
             api.Event.OnEntityDeath += OnEntityDeath;
         }
 
@@ -47,32 +45,32 @@ namespace PlayerCorpse.Systems
             var corpseEntity = CreateCorpseEntity(byPlayer);
             if (corpseEntity.Inventory != null && !corpseEntity.Inventory.Empty)
             {
-                if (Config.Current.CreateWaypoint.Value == "always")
+                if (Core.Config.CreateWaypoint == "always")
                 {
                     CreateDeathPoint(byPlayer);
                 }
 
                 // Save content for /returnthings
-                if (Config.Current.MaxDeathContentSavedPerPlayer.Value > 0)
+                if (Core.Config.MaxDeathContentSavedPerPlayer > 0)
                 {
                     SaveDeathContent(corpseEntity.Inventory, byPlayer);
                 }
 
                 // Spawn corpse
-                if (Config.Current.CreateCorpse.Value)
+                if (Core.Config.CreateCorpse)
                 {
-                    sapi.World.SpawnEntity(corpseEntity);
+                    _sapi.World.SpawnEntity(corpseEntity);
 
                     string message = string.Format(
                         "Created {0} at {1}, id {2}",
                         corpseEntity.GetName(),
-                        corpseEntity.SidedPos.XYZ.RelativePos(sapi),
+                        corpseEntity.SidedPos.XYZ.RelativePos(_sapi),
                         corpseEntity.EntityId);
 
-                    Core.ModLogger.Notification(message);
-                    if (Config.Current.DebugMode.Value)
+                    Mod.Logger.Notification(message);
+                    if (Core.Config.DebugMode)
                     {
-                        sapi.BroadcastMessage(message);
+                        _sapi.BroadcastMessage(message);
                     }
                 }
                 // Or drop all if corpse creations is disabled
@@ -87,26 +85,26 @@ namespace PlayerCorpse.Systems
                     "Inventory is empty, {0}'s corpse not created",
                     corpseEntity.OwnerName);
 
-                Core.ModLogger.Notification(message);
-                if (Config.Current.DebugMode.Value)
+                Mod.Logger.Notification(message);
+                if (Core.Config.DebugMode)
                 {
-                    sapi.BroadcastMessage(message);
+                    _sapi.BroadcastMessage(message);
                 }
             }
         }
 
         private EntityPlayerCorpse CreateCorpseEntity(IServerPlayer byPlayer)
         {
-            var entityType = sapi.World.GetEntityType(new AssetLocation(Core.ModId, "playercorpse"));
+            var entityType = _sapi.World.GetEntityType(new AssetLocation(Constants.ModId, "playercorpse"));
 
-            if (sapi.World.ClassRegistry.CreateEntity(entityType) is not EntityPlayerCorpse corpse)
+            if (_sapi.World.ClassRegistry.CreateEntity(entityType) is not EntityPlayerCorpse corpse)
             {
                 throw new Exception("Unable to instantiate player corpse");
             }
 
             corpse.OwnerUID = byPlayer.PlayerUID;
             corpse.OwnerName = byPlayer.PlayerName;
-            corpse.CreationTime = sapi.World.Calendar.TotalHours;
+            corpse.CreationTime = _sapi.World.Calendar.TotalHours;
             corpse.CreationRealDatetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
             corpse.Inventory = TakeContentFromPlayer(byPlayer);
@@ -119,7 +117,7 @@ namespace PlayerCorpse.Systems
 
             corpse.ServerPos.SetPos(pos);
             corpse.Pos.SetPos(pos);
-            corpse.World = sapi.World;
+            corpse.World = _sapi.World;
 
             return corpse;
         }
@@ -129,7 +127,7 @@ namespace PlayerCorpse.Systems
         {
             for (int i = pos.Y; i > 0; i--)
             {
-                var block = sapi.World.BlockAccessor.GetBlock(pos.X, i, pos.Z);
+                var block = _sapi.World.BlockAccessor.GetBlock(pos.X, i, pos.Z);
                 if (block.BlockId != 0 && block.CollisionBoxes?.Length > 0)
                 {
                     return new Vec3i(pos.X, i + 1, pos.Z);
@@ -141,10 +139,10 @@ namespace PlayerCorpse.Systems
 
         private InventoryGeneric TakeContentFromPlayer(IServerPlayer byPlayer)
         {
-            var inv = new InventoryGeneric(GetMaxCorpseSlots(byPlayer), "playercorpse-" + byPlayer.PlayerUID, sapi);
+            var inv = new InventoryGeneric(GetMaxCorpseSlots(byPlayer), "playercorpse-" + byPlayer.PlayerUID, _sapi);
 
             int lastSlotId = 0;
-            foreach (var invClassName in Config.Current.SaveInventoryTypes.Value)
+            foreach (var invClassName in Core.Config.SaveInventoryTypes)
             {
                 // Skip armor if it does not drop after death
                 bool isDropArmor = byPlayer.Entity.Properties.Server?.Attributes?.GetBool("dropArmorOnDeath") ?? false;
@@ -165,7 +163,7 @@ namespace PlayerCorpse.Systems
         private static int GetMaxCorpseSlots(IServerPlayer byPlayer)
         {
             int maxCorpseSlots = 0;
-            foreach (var invClassName in Config.Current.SaveInventoryTypes.Value)
+            foreach (var invClassName in Core.Config.SaveInventoryTypes)
             {
                 maxCorpseSlots += byPlayer.InventoryManager.GetOwnInventory(invClassName)?.Count ?? 0;
             }
@@ -192,10 +190,10 @@ namespace PlayerCorpse.Systems
         public static void CreateDeathPoint(IServerPlayer byPlayer)
         {
             var format = "/waypoint addati {0} ={1} ={2} ={3} {4} {5} Death: {6}";
-            var icon = Config.Current.WaypointIcon.Value;
+            var icon = Core.Config.WaypointIcon;
             var pos = byPlayer.Entity.ServerPos.AsBlockPos;
-            var isPinned = Config.Current.PinWaypoint.Value;
-            var color = Config.Current.WaypointColor.Value;
+            var isPinned = Core.Config.PinWaypoint;
+            var color = Core.Config.WaypointColor;
             var deathTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
             string message = string.Format(format, icon, pos.X, pos.Y, pos.Z, isPinned, color, deathTime);
@@ -224,7 +222,7 @@ namespace PlayerCorpse.Systems
             string path = api.GetOrCreateDataPath(localPath);
             string[] files = Directory.GetFiles(path).OrderByDescending(f => new FileInfo(f).Name).ToArray();
 
-            for (int i = files.Length - 1; i > Config.Current.MaxDeathContentSavedPerPlayer.Value - 2; i--)
+            for (int i = files.Length - 1; i > Core.Config.MaxDeathContentSavedPerPlayer - 2; i--)
             {
                 File.Delete(files[i]);
             }
@@ -239,7 +237,7 @@ namespace PlayerCorpse.Systems
         public InventoryGeneric LoadLastDeathContent(IPlayer player, int offset = 0)
         {
             ICoreAPI api = player.Entity.Api;
-            if (Config.Current.MaxDeathContentSavedPerPlayer.Value <= offset)
+            if (Core.Config.MaxDeathContentSavedPerPlayer <= offset)
                 throw new IndexOutOfRangeException("offset is too large or save data disabled");
 
             string localPath = Path.Combine("ModData", api.GetWorldId(), Mod.Info.ModID, ClearUID(player.PlayerUID));

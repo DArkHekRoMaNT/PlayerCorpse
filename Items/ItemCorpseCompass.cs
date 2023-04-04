@@ -8,15 +8,17 @@ using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
+using Vintagestory.Common;
+using static OpenTK.Graphics.OpenGL.GL;
 
 namespace PlayerCorpse.Items
 {
     public class ItemCorpseCompass : Item
     {
-        public const long SearchCooldown = 5000;
-        public const long OffHandSearchCooldown = 10000;
-        public const long OffHandParticleEmitCooldown = 250;
-        public const int SearchRadius = 3;
+        public static long SearchCooldown => 5000;
+        public static long OffHandSearchCooldown => 10000;
+        public static long OffHandParticleEmitCooldown => 250;
+        public static int SearchRadius => 3;
 
         private readonly SimpleParticleProperties _particles = new()
         {
@@ -41,6 +43,15 @@ namespace PlayerCorpse.Items
             VertexFlags = 100 & VertexFlags.GlowLevelBitMask,
             ParticleModel = EnumParticleModel.Quad
         };
+
+        ILogger? _modLogger;
+        public ILogger ModLogger => _modLogger ?? api.Logger;
+
+        public override void OnLoaded(ICoreAPI api)
+        {
+            base.OnLoaded(api);
+            _modLogger = api.ModLoader.GetModSystem<Core>().Mod.Logger;
+        }
 
         public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handling)
         {
@@ -133,8 +144,8 @@ namespace PlayerCorpse.Items
                     slot.MarkDirty();
 
                     string text = nearestCorpse.OwnerName + "'s corpse found at " + nearestCorpse.SidedPos.XYZ;
-                    Core.ModLogger.Notification(text);
-                    if (Config.Current.DebugMode.Value)
+                    ModLogger.Notification(text);
+                    if (Core.Config.DebugMode)
                     {
                         byEntity.SendMessage(text);
                     }
@@ -146,7 +157,7 @@ namespace PlayerCorpse.Items
                     slot.Itemstack.Attributes.RemoveAttribute("nearestCorpsePosZ");
                     slot.MarkDirty();
 
-                    byEntity.SendMessage(Lang.Get(Core.ModId + ":corpsecompass-corpses-not-found"));
+                    byEntity.SendMessage(Lang.Get(Constants.ModId + ":corpsecompass-corpses-not-found"));
                 }
             }
         }
@@ -194,7 +205,7 @@ namespace PlayerCorpse.Items
                         }
                         else
                         {
-                            Core.ModLogger.Warning("Chunk at X={0} Y={1} Z={2} is not loaded", i, k , j);
+                            ModLogger.Warning("Chunk at X={0} Y={1} Z={2} is not loaded", i, k, j);
                         }
                     }
                 }

@@ -12,7 +12,7 @@
 			<Version>1.0.3</Version>
 		</Dependencies>
 
-		<!-- IncludeFiles Include="modicon.png" /-->
+		<IncludeFiles Include="modicon.png" />
 		<IncludeFiles Include="LICENSE" />
 		<IncludeFiles Include="README.md" />
 	</ItemGroup>

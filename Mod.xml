@@ -2,14 +2,14 @@
 	<PropertyGroup>
 		<Name>Player Corpse</Name>
 		<ModId>playercorpse</ModId>
-		<Version>1.7.0</Version>
+		<Version>1.7.1</Version>
 		<Authors>DArkHekRoMaNT</Authors>
 		<GameVersion>1.18.0-rc.1</GameVersion>
 		<Website>https://github.com/darkhekromant/PlayerCorpse</Website>
 	</PropertyGroup>
 	<ItemGroup>
 		<Dependencies Include="commonlib">
-			<Version>2.0.0</Version>
+			<Version>2.0.3</Version>
 		</Dependencies>
 
 		<IncludeFiles Include="modicon.png" />

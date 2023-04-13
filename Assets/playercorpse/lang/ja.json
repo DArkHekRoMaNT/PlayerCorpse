@@ -1,0 +1,22 @@
+{
+	// Japanese localization file for 'Player Corpse'.
+	// Mod Version: 1.5.1
+	// Translated By: Macoto Hino
+	// Machine translation using PCOT and DeepL.
+	
+  "item-creature-playercorpse": "Player corpse(兵どもが夢の跡)",
+  "blockhelp-collect": "回収",
+
+  "game:ingameerror-not-corpse-owner": "これはあなたの夢の跡ではありません！",
+  "corpse-free": "ご自由にどうぞ。",
+  "corpse-created(date={0})": "{0}に作成されました。",
+
+  "game:tabname-playercorpse": "Player corpse(兵どもが夢の跡)",
+
+  "item-corpsecompass": "夢の跡のコンパス",
+  "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "使い方",
+  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "自分の夢の跡を見付けるのに役立ちます。サーバー管理者はserver-main.txtのログで全ての夢の跡の正確な座標を確認することも出来ます（クリエイティブでの使用）。<br/><br/><b>プレイヤーの周囲7×7チャンクを検索します（デフォルトは224×256×224ブロック）。</b>",
+  "corpsecompass-corpses-not-found": "周辺に夢の跡はありません。",
+  "corpsecompass-target-set": "最後の夢の跡に目標を設定します。",
+  "corpsecompass-no-last-corpse": "最後の夢の跡が見付かりませんでした。"
+}

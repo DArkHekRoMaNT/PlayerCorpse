@@ -1,0 +1,13 @@
+{
+  "item-creature-playercorpse": "Cadáver del jugador",
+  "blockhelp-collect": "Recoger",
+  "game:ingameerror-not-corpse-owner": "¡Este no es tu cadáver!",
+  "corpse-free": "Libre para todos",
+  "corpse-created(date={0})": "Creado {0}",
+  "item-corpsecompass": "Brújula de cadáver",
+  "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Uso",
+  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Ayuda a encontrar tus cuerpos. Los administradores del servidor también pueden comprobar el registro del servidor.txt para las coordenadas exactas de todos los cuerpos (usado al agacharse) <br/><br/><b>Solo funciona para la actual columna de chunks, por defecto es de 32x256x32 bloques</b>",
+  "corpsecompass-corpses-not-found": "No se encontraron cuerpos en esta columna de chunks",
+  "corpsecompass-target-set": "Target set on the last corpse",
+  "corpsecompass-no-last-corpse": "Last corpse not found"
+}

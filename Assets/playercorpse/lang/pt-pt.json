@@ -1,0 +1,13 @@
+{
+  "item-creature-playercorpse": "Cadáver do jogador",
+  "blockhelp-collect": "Coletar",
+  "game:ingameerror-not-corpse-owner": "Este não é o seu cadáver!",
+  "corpse-free": "Gratuito para todos",
+  "corpse-created(date={0})": "Criado {0}",
+  "item-corpsecompass": "Bússola de Cadáver",
+  "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Uso",
+  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Ajuda a encontrar os seus corpos. Os administradores do servidor também podem verificar o log server-main.txt para obter as coordenadas exatas de todos os cadáveres (uso no criativo)<br/><br/><b>Pesquisas em blocos 7x7 ao redor do jogador (224x256x224 blocos por padrão)</b>",
+  "corpsecompass-corpses-not-found": "Nenhum cadáver encontrado ao redor",
+  "corpsecompass-target-set": "Alvo definido no último cadáver",
+  "corpsecompass-no-last-corpse": "Último cadáver não encontrado"
+}

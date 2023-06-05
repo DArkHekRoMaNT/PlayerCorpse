@@ -1,11 +1,9 @@
 {
   "item-creature-playercorpse": "Cadáver do jogador",
   "blockhelp-collect": "Coletar",
-
   "game:ingameerror-not-corpse-owner": "Este não é o seu cadáver!",
   "corpse-free": "Cadáver sem dono",
   "corpse-created(date={0})": "Ccriado {0}",
-
   "item-corpsecompass": "Compasso de cadáveres",
   "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Uso",
   "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Ajuda a encontrar seus cadáveres. Os administradores do servidor também podem verificar o log server-main.txt para as coordenadas exatas de todos os cadáveres (Se usa esgueirando-se)<br/><br/><b>Funciona apenas nesta região atual, por padrão é 32x256x32 blocos </b>",

@@ -1,5 +1,13 @@
 {
   "item-creature-playercorpse": "Mŕtvola hráča",
-  "blockhelp-collect": "Pozbieraj veci",
-  "game:ingameerror-not-corpse-owner": "Toto nie je tvoja mŕtvola!"
+  "blockhelp-collect": "Pozbieraj",
+  "game:ingameerror-not-corpse-owner": "Toto nie je tvoja mŕtvola!",
+  "corpse-free": "Pre všetkých",
+  "corpse-created(date={0})": "Vytvoril {0}",
+  "item-corpsecompass": "Kompas k mŕtvole",
+  "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Použitie",
+  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Pomôže nájisť mŕtvoly. Administrátor servera uvidí v server-main.txt presné pozície všetkých mŕtvol (použitie s prikrčením)<br/><br/><b>Funkguje len pre aktuálny stĺpec chunkov, predvolene je to 32x256x32 blokov</b>",
+  "corpsecompass-corpses-not-found": "V rámci tohto stĺpca chunkov sa nenachádza žiadna mŕtvola",
+  "corpsecompass-target-set": "Target set on the last corpse",
+  "corpsecompass-no-last-corpse": "Last corpse not found"
 }

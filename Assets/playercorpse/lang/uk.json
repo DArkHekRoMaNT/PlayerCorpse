@@ -1,13 +1,13 @@
 {
   "item-creature-playercorpse": "Тіло гравця",
   "blockhelp-collect": "Підібрати",
-
   "game:ingameerror-not-corpse-owner": "Це не ваше тіло!",
   "corpse-free": "Доступно для всіх",
   "corpse-created(date={0})": "Створено {0}",
-
   "item-corpsecompass": "Компас мерця",
   "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Використання",
-  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Допомагає знайти своє тіло. Адміністратори серверів можуть переглядати точні координати всіх загиблих тіл у файлі звіту server-main.txt (Використовувати навприсядки)<br/><br/><b>Працює лише в поточному чанку, типово це 32x256x32 блоків</b>",
-  "corpsecompass-corpses-not-found": "Жодного тіла не знайдено в поточному чанку"
+  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Допомагає знайти своє тіло. Адміністратори серверів можуть переглядати точні координати всіх загиблих тіл у файлі звіту server-main.txt (використовується в креативі)<br/><br/><b>Шукає в межах 7x7 чанків навколо гравця, (типово це 224x256x224 блоків)</b>",
+  "corpsecompass-corpses-not-found": "Навколо жодного тіла не знайдено",
+  "corpsecompass-target-set": "Встановлено напрямок до останнього тіла",
+  "corpsecompass-no-last-corpse": "Не знайдено останнього тіла гравця"
 }

@@ -1,0 +1,13 @@
+{
+  "item-creature-playercorpse": "Cadavere giocatore",
+  "blockhelp-collect": "Raccogliere",
+  "game:ingameerror-not-corpse-owner": "Questo non è il tuo cadavere!",
+  "corpse-free": "Gratuito per tutti",
+  "corpse-created(date={0})": "Creato {0}",
+  "item-corpsecompass": "Bussola Cadavere",
+  "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Uso",
+  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Aiuta a trovare il tuo cadavere. Gli amministratori del Server possono anche controllare il file log server-main.txt per vedere le coordinate esatte di tutti i cadaveri (usato con accovacciati)<br/><br/><b>Funziona solo con l'attuale colonna di chunks, di default è di blocchi 32x256x32 </b>",
+  "corpsecompass-corpses-not-found": "Nessun tuo cadavere trovato in questa colonna di chunks",
+  "corpsecompass-target-set": "Obiettivo impostato sull'ultimo cadavere",
+  "corpsecompass-no-last-corpse": "Ultimo cadavere non trovato"
+}

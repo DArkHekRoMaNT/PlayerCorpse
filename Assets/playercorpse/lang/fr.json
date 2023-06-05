@@ -1,7 +1,13 @@
 {
-  "item-creature-playercorpse": "Corps du joueur",
-  "blockhelp-collect": "R�cup�rer",
-  "game:ingameerror-not-corpse-owner": "Ce n'est pas votre corps!",
-  "corpse-free": "R�cup�rable par n'importe qui",
-  "corpse-created(date={0})": "cr�� {0}"
-}
+  "item-creature-playercorpse": "Cadavre de joueur",
+  "blockhelp-collect": "Récupérer",
+  "game:ingameerror-not-corpse-owner": "Ce n 'est pas votre corps !",
+  "corpse-free": "Tout le monde peut récupérer le butin",
+  "corpse-created(date={0})": "Date du décès : {0}",
+  "item-corpsecompass": "Boussole pour cadavre",
+  "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Utilisation",
+  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Aide à trouver vos cadavres. Les administrateurs du serveur peuvent également vérifier le log de serveur-main.txt pour les coordonnées exactes de tous les cadavres (s'utilise en Créatif)<br/><br/><b>Cherche sur 7x7 tronçons autour du joueur (224x256x224 blocs par défaut)</b>",
+  "corpsecompass-corpses-not-found": "Aucun cadavre trouvé aux alentours",
+  "corpsecompass-target-set": "Cible définie sur le dernier cadavre",
+  "corpsecompass-no-last-corpse": "Dernier cadavre non trouvé"
+}

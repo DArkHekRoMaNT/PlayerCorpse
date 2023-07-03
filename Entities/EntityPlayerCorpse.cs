@@ -198,9 +198,17 @@ namespace PlayerCorpse.Entities
 
         private bool CanCollect(IPlayer byPlayer)
         {
-            return byPlayer.PlayerUID == OwnerUID ||
-                   byPlayer.WorldData.CurrentGameMode == EnumGameMode.Creative ||
-                   IsFree;
+            if (byPlayer.Entity.Alive)
+            {
+                if (byPlayer.PlayerUID == OwnerUID ||
+                    byPlayer.WorldData.CurrentGameMode == EnumGameMode.Creative ||
+                    IsFree)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void Collect(IPlayer byPlayer)

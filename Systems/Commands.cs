@@ -1,5 +1,4 @@
 using CommonLib.Extensions;
-using CommonLib.Utils;
 using System;
 using System.IO;
 using System.Linq;
@@ -60,7 +59,7 @@ namespace PlayerCorpse.Systems
             var sb = new StringBuilder();
             for (int i = 0; i < files.Length; i++)
             {
-                sb.AppendLine(i + ". " + Path.GetFileName(files[i]));
+                sb.AppendLine($"{i}. {Path.GetFileName(files[i])}");
             }
             return TextCommandResult.Success(sb.ToString());
         }
@@ -89,7 +88,10 @@ namespace PlayerCorpse.Systems
             InventoryGeneric inventory = dcm.LoadLastDeathContent(player, id);
             foreach (var slot in inventory)
             {
-                if (slot.Empty) continue;
+                if (slot.Empty)
+                {
+                    continue;
+                }
 
                 if (!giveToPlayer.InventoryManager.TryGiveItemstack(slot.Itemstack))
                 {

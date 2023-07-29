@@ -1,6 +1,5 @@
 using CommonLib.UI;
 using CommonLib.Utils;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using Vintagestory.API.Client;
@@ -9,7 +8,6 @@ using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
-using Vintagestory.Common;
 
 namespace PlayerCorpse.Entities
 {
@@ -17,7 +15,7 @@ namespace PlayerCorpse.Entities
     {
         private ILogger? _modLogger;
         private long _lastInteractMs;
-        private HudCircleRenderer _interactRingRenderer;
+        private HudCircleRenderer _interactRingRenderer = null!;
 
         private float SecondsPassed { get; set; }
 
@@ -77,7 +75,7 @@ namespace PlayerCorpse.Entities
 
             if (api is ICoreClientAPI capi)
             {
-                _interactRingRenderer = new HudCircleRenderer(capi, new HudCircleSettings()
+                _interactRingRenderer = new HudCircleRenderer(capi, new HudCircleSettings
                 {
                     Color = 0xFF9500
                 });
@@ -217,7 +215,10 @@ namespace PlayerCorpse.Entities
             {
                 foreach (var slot in Inventory)
                 {
-                    if (slot.Empty) continue;
+                    if (slot.Empty)
+                    {
+                        continue;
+                    }
 
                     if (!byPlayer.InventoryManager.TryGiveItemstack(slot.Itemstack))
                     {
@@ -317,11 +318,11 @@ namespace PlayerCorpse.Entities
             var sb = new StringBuilder();
 
             sb.Append(base.GetInfoText());
-            sb.AppendLine(Lang.Get(Constants.ModId + ":corpse-created(date={0})", CreationRealDatetime));
+            sb.AppendLine(Lang.Get($"{Constants.ModId}:corpse-created(date={{0}})", CreationRealDatetime));
 
             if (IsFree)
             {
-                sb.AppendLine(Lang.Get(Constants.ModId + ":corpse-free"));
+                sb.AppendLine(Lang.Get($"{Constants.ModId}:corpse-free"));
             }
 
             return sb.ToString();
@@ -330,8 +331,8 @@ namespace PlayerCorpse.Entities
         public override WorldInteraction[] GetInteractionHelp(IClientWorldAccessor world, EntitySelection es, IClientPlayer player)
         {
             return new WorldInteraction[] {
-                new WorldInteraction{
-                    ActionLangCode = Constants.ModId + ":blockhelp-collect",
+                new WorldInteraction {
+                    ActionLangCode = $"{Constants.ModId}:blockhelp-collect",
                     MouseButton = EnumMouseButton.Right
                 }
             };

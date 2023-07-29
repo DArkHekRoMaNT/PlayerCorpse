@@ -73,6 +73,7 @@ namespace PlayerCorpse.Systems
                         _sapi.BroadcastMessage(message);
                     }
                 }
+
                 // Or drop all if corpse creations is disabled
                 else
                 {
@@ -139,7 +140,7 @@ namespace PlayerCorpse.Systems
 
         private InventoryGeneric TakeContentFromPlayer(IServerPlayer byPlayer)
         {
-            var inv = new InventoryGeneric(GetMaxCorpseSlots(byPlayer), "playercorpse-" + byPlayer.PlayerUID, _sapi);
+            var inv = new InventoryGeneric(GetMaxCorpseSlots(byPlayer), $"playercorpse-{byPlayer.PlayerUID}", _sapi);
 
             int lastSlotId = 0;
             foreach (var invClassName in Core.Config.SaveInventoryTypes)
@@ -172,7 +173,10 @@ namespace PlayerCorpse.Systems
 
         private static ItemStack? TakeSlotContent(ItemSlot slot)
         {
-            if (slot.Empty) return null;
+            if (slot.Empty)
+            {
+                return null;
+            }
 
             // Skip the player's clothing (not armor)
             if (slot.Inventory.ClassName == GlobalConstants.characterInvClassName)
@@ -230,15 +234,17 @@ namespace PlayerCorpse.Systems
             var tree = new TreeAttribute();
             inventory.ToTreeAttributes(tree);
 
-            string name = "inventory-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".dat";
-            File.WriteAllBytes(path + "/" + name, tree.ToBytes());
+            string name = $"inventory-{DateTime.Now:yyyy-MM-dd-HH-mm-ss}.dat";
+            File.WriteAllBytes($"{path}/{name}", tree.ToBytes());
         }
 
         public InventoryGeneric LoadLastDeathContent(IPlayer player, int offset = 0)
         {
             ICoreAPI api = player.Entity.Api;
             if (Core.Config.MaxDeathContentSavedPerPlayer <= offset)
+            {
                 throw new IndexOutOfRangeException("offset is too large or save data disabled");
+            }
 
             string localPath = Path.Combine("ModData", api.GetWorldId(), Mod.Info.ModID, ClearUID(player.PlayerUID));
             string path = api.GetOrCreateDataPath(localPath);
@@ -250,7 +256,7 @@ namespace PlayerCorpse.Systems
             var tree = new TreeAttribute();
             tree.FromBytes(File.ReadAllBytes(file));
 
-            var inv = new InventoryGeneric(tree.GetInt("qslots"), "playercorpse-" + player.PlayerUID, api);
+            var inv = new InventoryGeneric(tree.GetInt("qslots"), $"playercorpse-{player.PlayerUID}", api);
             inv.FromTreeAttributes(tree);
             return inv;
         }

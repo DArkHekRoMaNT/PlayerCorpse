@@ -14,7 +14,7 @@ namespace PlayerCorpse
             var configs = api.ModLoader.GetModSystem<ConfigManager>();
             Config = configs.GetConfig<Config>();
 
-            api.World.Config.SetBool(Mod.Info.ModID + ":CorpseCompassEnabled", Config.CorpseCompassEnabled);
+            api.World.Config.SetBool($"{Mod.Info.ModID}:CorpseCompassEnabled", Config.CorpseCompassEnabled);
 
             api.RegisterEntity("EntityPlayerCorpse", typeof(EntityPlayerCorpse));
             api.RegisterItemClass("ItemCorpseCompass", typeof(ItemCorpseCompass));

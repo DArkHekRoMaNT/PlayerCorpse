@@ -8,8 +8,6 @@ using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
-using Vintagestory.Common;
-using static OpenTK.Graphics.OpenGL.GL;
 
 namespace PlayerCorpse.Items
 {
@@ -44,7 +42,7 @@ namespace PlayerCorpse.Items
             ParticleModel = EnumParticleModel.Quad
         };
 
-        ILogger? _modLogger;
+        private ILogger? _modLogger;
         public ILogger ModLogger => _modLogger ?? api.Logger;
 
         public override void OnLoaded(ICoreAPI api)
@@ -143,7 +141,7 @@ namespace PlayerCorpse.Items
                     slot.Itemstack.Attributes.SetVec3i("nearestCorpsePos", nearestCorpse.Pos.XYZInt);
                     slot.MarkDirty();
 
-                    string text = nearestCorpse.OwnerName + "'s corpse found at " + nearestCorpse.SidedPos.XYZ;
+                    string text = $"{nearestCorpse.OwnerName}'s corpse found at {nearestCorpse.SidedPos.XYZ}";
                     ModLogger.Notification(text);
                     if (Core.Config.DebugMode)
                     {
@@ -157,7 +155,7 @@ namespace PlayerCorpse.Items
                     slot.Itemstack.Attributes.RemoveAttribute("nearestCorpsePosZ");
                     slot.MarkDirty();
 
-                    byEntity.SendMessage(Lang.Get(Constants.ModId + ":corpsecompass-corpses-not-found"));
+                    byEntity.SendMessage(Lang.Get($"{Constants.ModId}:corpsecompass-corpses-not-found"));
                 }
             }
         }

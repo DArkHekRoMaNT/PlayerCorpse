@@ -7,7 +7,5 @@
   "item-corpsecompass": "Leichenkompass",
   "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Nutzung",
   "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Hilft dir deine Leichen zu finden. Server Administratoren können auch das Serverprotokoll überprüfen um die genauen Koordinaten aller Leichen herauszufinden (server-main.txt). <br/><br/><b> Funktioniert nur für die aktuelle Spalte der Chunks, standardmäßig ist dies bei 32x256x32 Blöcken</b>",
-  "corpsecompass-corpses-not-found": "Keine Leichen in dieser Chunk-Spalte gefunden",
-  "corpsecompass-target-set": "Target set on the last corpse",
-  "corpsecompass-no-last-corpse": "Last corpse not found"
+  "corpsecompass-corpses-not-found": "Keine Leichen in dieser Chunk-Spalte gefunden"
 }

@@ -1,0 +1,13 @@
+{
+  "item-creature-playercorpse": "Zwłoki Gracza",
+  "blockhelp-collect": "Zbierz",
+  "game:ingameerror-not-corpse-owner": "To nie są twoje zwłoki!",
+  "corpse-free": "Dla wszystkich",
+  "corpse-created(date={0})": "Utworzono {0}",
+  "item-corpsecompass": "Kompas do zwłok",
+  "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Instrukcja",
+  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Pomaga znaleźć twoje zwłoki. Administratorzy serwera mogą również sprawdzić log server-main.txt w celu uzyskania dokładnych współrzędnych wszystkich zwłok (używane w trybie Kreatywnym)<br/><br/><b>Szuka w obszarze 7x7 chunków wokół gracza (domyślnie 224x256x224 bloki)</b>",
+  "corpsecompass-corpses-not-found": "Nie znaleziono zwłok w pobliżu",
+  "corpsecompass-target-set": "Ustawiono cel na ostatnich zwłokach",
+  "corpsecompass-no-last-corpse": "Nie odnaleziono ostatnich zwłok"
+}

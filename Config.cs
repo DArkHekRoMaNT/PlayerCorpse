@@ -15,14 +15,14 @@ namespace PlayerCorpse
 
         public bool CreateCorpse { get; set; } = true;
 
-        public string[] SaveInventoryTypes { get; set; } = new string[]
-        {
+        public string[] SaveInventoryTypes { get; set; } =
+        [
             GlobalConstants.hotBarInvClassName,
             GlobalConstants.backpackInvClassName,
             GlobalConstants.craftingInvClassName,
             GlobalConstants.mousecursorInvClassName,
             GlobalConstants.characterInvClassName
-        };
+        ];
 
         [Privileges]
         public string NeedPrivilegeForReturnThings { get; set; } = Privilege.gamemode;

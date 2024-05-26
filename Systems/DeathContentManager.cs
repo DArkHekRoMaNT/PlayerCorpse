@@ -111,7 +111,7 @@ namespace PlayerCorpse.Systems
             corpse.Inventory = TakeContentFromPlayer(byPlayer);
 
             // Fix dancing corpse issue
-            Vec3i floorPos = TryFindFloor(byPlayer.Entity.ServerPos.XYZInt);
+            BlockPos floorPos = TryFindFloor(byPlayer.Entity.ServerPos.AsBlockPos);
 
             // Attempt to align the corpse to the center of the block so that it does not crawl higher
             Vec3d pos = floorPos.ToVec3d().Add(.5, 0, .5);
@@ -124,17 +124,19 @@ namespace PlayerCorpse.Systems
         }
 
         /// <summary> Try to find the nearest block with collision below </summary>
-        private Vec3i TryFindFloor(Vec3i pos)
+        private BlockPos TryFindFloor(BlockPos pos)
         {
+            var floorPos = new BlockPos(pos.dimension);
             for (int i = pos.Y; i > 0; i--)
             {
-                var block = _sapi.World.BlockAccessor.GetBlock(pos.X, i, pos.Z);
+                floorPos.Set(pos.X, i, pos.Z);
+                var block = _sapi.World.BlockAccessor.GetBlock(floorPos);
                 if (block.BlockId != 0 && block.CollisionBoxes?.Length > 0)
                 {
-                    return new Vec3i(pos.X, i + 1, pos.Z);
+                    floorPos.Set(pos.X, i + 1, pos.Z);
+                    return floorPos;
                 }
             }
-
             return pos;
         }
 

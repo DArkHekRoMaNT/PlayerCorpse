@@ -137,7 +137,7 @@ namespace PlayerCorpse.Entities
         {
             if (Api is ICoreClientAPI capi)
             {
-                capi.Network.SendEntityPacket(EntityId, 141325, new[] { (byte)SecondsPassed });
+                capi.Network.SendEntityPacket(EntityId, 141325, [(byte)SecondsPassed]);
             }
         }
 
@@ -330,12 +330,11 @@ namespace PlayerCorpse.Entities
 
         public override WorldInteraction[] GetInteractionHelp(IClientWorldAccessor world, EntitySelection es, IClientPlayer player)
         {
-            return new WorldInteraction[] {
-                new WorldInteraction {
-                    ActionLangCode = $"{Constants.ModId}:blockhelp-collect",
-                    MouseButton = EnumMouseButton.Right
-                }
-            };
+            return [new WorldInteraction
+            {
+                ActionLangCode = $"{Constants.ModId}:blockhelp-collect",
+                MouseButton = EnumMouseButton.Right
+            }];
         }
     }
 }

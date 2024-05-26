@@ -154,6 +154,23 @@ namespace PlayerCorpse.Systems
                     continue;
                 }
 
+                // XSkills slots fix
+                if (invClassName.Equals(GlobalConstants.backpackInvClassName) &&
+                    byPlayer.InventoryManager.GetOwnInventory("xskillshotbar") != null)
+                {
+                    int i = 0;
+                    var backpackInv = byPlayer.InventoryManager.GetOwnInventory(invClassName);
+                    foreach (var slot in backpackInv)
+                    {
+                        if (i > backpackInv.Count - 4) // Extra backpack slots
+                        {
+                            break;
+                        }
+                        inv[lastSlotId++].Itemstack = TakeSlotContent(slot);
+                    }
+                    continue;
+                }
+
                 foreach (var slot in byPlayer.InventoryManager.GetOwnInventory(invClassName))
                 {
                     inv[lastSlotId++].Itemstack = TakeSlotContent(slot);

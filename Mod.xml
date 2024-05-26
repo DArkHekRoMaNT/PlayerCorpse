@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<Name>Player Corpse</Name>
 		<ModId>playercorpse</ModId>
-		<Version>1.10.0</Version>
+		<Version>1.10.1-rc.1</Version>
 		<Authors>DArkHekRoMaNT</Authors>
 		<MinimalGameVersion>1.19.0</MinimalGameVersion>
 		<GameVersion>1.19.7</GameVersion>

@@ -215,18 +215,27 @@ namespace PlayerCorpse.Systems
             });
         }
 
-        public static string ClearUID(string uid)
+        public string GetDeathDataPath(IPlayer player)
         {
-            return Regex.Replace(uid, "[^0-9a-zA-Z]", "");
+            ICoreAPI api = player.Entity.Api;
+            string uidFixed = Regex.Replace(player.PlayerUID, "[^0-9a-zA-Z]", "");
+            string localPath = Path.Combine("ModData", api.GetWorldId(), Mod.Info.ModID, uidFixed);
+            return api.GetOrCreateDataPath(localPath);
+        }
+
+        public string[] GetDeathDataFiles(IPlayer player)
+        {
+            string path = GetDeathDataPath(player);
+            return Directory
+                .GetFiles(path)
+                .OrderByDescending(f => new FileInfo(f).Name)
+                .ToArray();
         }
 
         public void SaveDeathContent(InventoryGeneric inventory, IPlayer player)
         {
-            ICoreAPI api = player.Entity.Api;
-
-            string localPath = Path.Combine("ModData", api.GetWorldId(), Mod.Info.ModID, ClearUID(player.PlayerUID));
-            string path = api.GetOrCreateDataPath(localPath);
-            string[] files = Directory.GetFiles(path).OrderByDescending(f => new FileInfo(f).Name).ToArray();
+            string path = GetDeathDataPath(player);
+            string[] files = GetDeathDataFiles(player);
 
             for (int i = files.Length - 1; i > Core.Config.MaxDeathContentSavedPerPlayer - 2; i--)
             {
@@ -242,23 +251,17 @@ namespace PlayerCorpse.Systems
 
         public InventoryGeneric LoadLastDeathContent(IPlayer player, int offset = 0)
         {
-            ICoreAPI api = player.Entity.Api;
             if (Core.Config.MaxDeathContentSavedPerPlayer <= offset)
             {
                 throw new IndexOutOfRangeException("offset is too large or save data disabled");
             }
 
-            string localPath = Path.Combine("ModData", api.GetWorldId(), Mod.Info.ModID, ClearUID(player.PlayerUID));
-            string path = api.GetOrCreateDataPath(localPath);
-            string file = Directory.GetFiles(path)
-                .OrderByDescending(f => new FileInfo(f).Name)
-                .ToArray()
-                .ElementAt(offset);
+            string file = GetDeathDataFiles(player).ElementAt(offset);
 
             var tree = new TreeAttribute();
             tree.FromBytes(File.ReadAllBytes(file));
 
-            var inv = new InventoryGeneric(tree.GetInt("qslots"), $"playercorpse-{player.PlayerUID}", api);
+            var inv = new InventoryGeneric(tree.GetInt("qslots"), $"playercorpse-{player.PlayerUID}", player.Entity.Api);
             inv.FromTreeAttributes(tree);
             return inv;
         }

@@ -13,10 +13,13 @@ namespace PlayerCorpse.Systems
     public class Commands : ModSystem
     {
         private ICoreServerAPI _sapi = null!;
+        private DeathContentManager _deathContentManager = null!;
 
         public override void StartServerSide(ICoreServerAPI api)
         {
             _sapi = api;
+            _deathContentManager = api.ModLoader.GetModSystem<DeathContentManager>();
+
             var parsers = api.ChatCommands.Parsers;
             api.ChatCommands
                 .Create("returnthings")
@@ -35,21 +38,10 @@ namespace PlayerCorpse.Systems
                 .EndSubCommand();
         }
 
-        private string[] GetFiles(string playerUID)
-        {
-            string worldId = _sapi.GetWorldId();
-            string localPath = Path.Combine("ModData", worldId, Mod.Info.ModID, playerUID);
-            string path = _sapi.GetOrCreateDataPath(localPath);
-            return Directory
-                .GetFiles(path)
-                .OrderByDescending(f => new FileInfo(f).Name)
-                .ToArray();
-        }
-
         private TextCommandResult ShowDeathList(TextCommandCallingArgs args)
         {
             IPlayer player = (IPlayer)args[0];
-            string[] files = GetFiles(player.PlayerUID);
+            string[] files = _deathContentManager.GetDeathDataFiles(player);
 
             if (files.Length == 0)
             {
@@ -69,10 +61,9 @@ namespace PlayerCorpse.Systems
             IPlayer player = (IPlayer)args[0];
             IPlayer giveToPlayer = (IPlayer)args[1];
             int id = (int)args[2];
-            string[] files = GetFiles(player.PlayerUID);
+            string[] files = _deathContentManager.GetDeathDataFiles(player);
 
-            if (!_sapi.World.AllOnlinePlayers.Contains(giveToPlayer)
-                || giveToPlayer.Entity is null)
+            if (!_sapi.World.AllOnlinePlayers.Contains(giveToPlayer) || giveToPlayer.Entity == null)
             {
                 return TextCommandResult.Error(Lang.Get(
                     "Player {0} is offline or not fully loaded.",

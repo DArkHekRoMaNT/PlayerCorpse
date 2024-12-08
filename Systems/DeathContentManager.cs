@@ -30,11 +30,11 @@ namespace PlayerCorpse.Systems
         {
             if (entity is EntityPlayer entityPlayer)
             {
-                OnPlayerDeath((IServerPlayer)entityPlayer.Player, damageSource);
+                OnPlayerDeath((IServerPlayer)entityPlayer.Player);
             }
         }
 
-        private void OnPlayerDeath(IServerPlayer byPlayer, DamageSource damageSource)
+        private void OnPlayerDeath(IServerPlayer byPlayer)
         {
             bool isKeepContent = byPlayer.Entity?.Properties?.Server?.Attributes?.GetBool("keepContents") ?? false;
             if (isKeepContent)
@@ -82,10 +82,7 @@ namespace PlayerCorpse.Systems
             }
             else
             {
-                string message = string.Format(
-                    "Inventory is empty, {0}'s corpse not created",
-                    corpseEntity.OwnerName);
-
+                string message = $"Inventory is empty, {corpseEntity.OwnerName}'s corpse not created";
                 Mod.Logger.Notification(message);
                 if (Core.Config.DebugMode)
                 {

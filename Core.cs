@@ -22,18 +22,16 @@ namespace PlayerCorpse
 
         public override void AssetsLoaded(ICoreAPI api)
         {
-            if (Config.CreateWaypoint == "auto")
+            if (Config.CreateWaypoint == Config.CreateWaypointMode.Auto)
             {
-                Config.CreateWaypoint = "always";
+                Config.CreateWaypoint = Config.CreateWaypointMode.Always;
 
-                string[] hasDeathWaypointsMods = api.Assets.Get<string[]>(
-                    new AssetLocation(Mod.Info.ModID, "config/hasdeathwaypointsmods.json"));
-
-                foreach (string modid in hasDeathWaypointsMods)
+                var hasDeathWaypointsMods = api.Assets.Get<string[]>($"{Mod.Info.ModID}:config/hasdeathwaypointsmods.json");
+                foreach (var modid in hasDeathWaypointsMods)
                 {
                     if (api.ModLoader.IsModEnabled(modid))
                     {
-                        Config.CreateWaypoint = "none";
+                        Config.CreateWaypoint = Config.CreateWaypointMode.None;
                     }
                 }
             }

@@ -30,9 +30,9 @@ namespace PlayerCorpse
         [Range(0, int.MaxValue)]
         public int MaxDeathContentSavedPerPlayer { get; set; } = 10;
 
-        [Description("auto mode will try to resolve conflicts with other mods")]
-        [Strings("auto", "always", "none")]
-        public string CreateWaypoint { get; set; } = "auto";
+        [Description("Auto mode will try to resolve conflicts with other mods")]
+        public CreateWaypointMode CreateWaypoint { get; set; } = CreateWaypointMode.Auto;
+        public enum CreateWaypointMode { Auto, Always, None };
 
         [Description("circle, bee, cave, home, ladder, pick, rocks, ruins, spiral, star1, star2, trader, vessel, etc")]
         public string WaypointIcon { get; set; } = "bee";
@@ -51,5 +51,9 @@ namespace PlayerCorpse
 
         [Description("If you set it to false, all already existing compasses will turn into an unknown item")]
         public bool CorpseCompassEnabled { get; set; } = true;
+
+        [Description("Override vanilla keep inventory system, so you can drop armor and cloth")]
+        public DropArmorMode DropArmorOnDeath { get; set; } = DropArmorMode.Vanilla;
+        public enum DropArmorMode { Vanilla, Armor, ArmorAndCloth };
     }
 }

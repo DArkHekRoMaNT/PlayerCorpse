@@ -45,7 +45,7 @@ namespace PlayerCorpse.Systems
             var corpseEntity = CreateCorpseEntity(byPlayer);
             if (corpseEntity.Inventory != null && !corpseEntity.Inventory.Empty)
             {
-                if (Core.Config.CreateWaypoint == "always")
+                if (Core.Config.CreateWaypoint == Config.CreateWaypointMode.Always)
                 {
                     CreateDeathPoint(byPlayer);
                 }
@@ -145,7 +145,8 @@ namespace PlayerCorpse.Systems
             foreach (var invClassName in Core.Config.SaveInventoryTypes)
             {
                 // Skip armor if it does not drop after death
-                bool isDropArmor = byPlayer.Entity.Properties.Server?.Attributes?.GetBool("dropArmorOnDeath") ?? false;
+                var isDropArmorVanilla = byPlayer.Entity.Properties.Server?.Attributes?.GetBool("dropArmorOnDeath") ?? false;
+                var isDropArmor = isDropArmorVanilla || Core.Config.DropArmorOnDeath != Config.DropArmorMode.Vanilla;
                 if (invClassName == GlobalConstants.characterInvClassName && !isDropArmor)
                 {
                     continue;
@@ -198,7 +199,7 @@ namespace PlayerCorpse.Systems
             if (slot.Inventory.ClassName == GlobalConstants.characterInvClassName)
             {
                 bool isArmor = slot.Itemstack.ItemAttributes?["protectionModifiers"].Exists ?? false;
-                if (!isArmor)
+                if (!isArmor && Core.Config.DropArmorOnDeath != Config.DropArmorMode.ArmorAndCloth)
                 {
                     return null;
                 }

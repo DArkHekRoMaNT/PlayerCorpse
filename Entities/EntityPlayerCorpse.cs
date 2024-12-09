@@ -1,5 +1,6 @@
 using CommonLib.UI;
 using CommonLib.Utils;
+using System;
 using System.IO;
 using System.Text;
 using Vintagestory.API.Client;
@@ -129,6 +130,26 @@ namespace PlayerCorpse.Entities
                     {
                         ForceUpdateSecondsPassedOnServer();
                     }
+                }
+            }
+
+            if (Api is ICoreClientAPI capi)
+            {
+                if (OwnerUID == capi.World.Player.PlayerUID && Api.World.Rand.NextDouble() < 0.3)
+                {
+                    capi.World.SpawnParticles(new SimpleParticleProperties()
+                    {
+                        MinPos = Pos.XYZ,
+                        Color = GetRandomColor(Api.World.Rand),
+                        MinSize = 0.2f,
+                        MaxSize = 0.3f,
+                        MinVelocity = new Vec3f(-0.1f, 0.5f, -0.1f),
+                        AddVelocity = new Vec3f(0.2f, 1.5f, 0.2f),
+                        MinQuantity = 1,
+                        LifeLength = 1,
+                        WithTerrainCollision = false,
+                        LightEmission = DarkColor.FromARGB(255, 255, 255, 255).RGBA
+                    });
                 }
             }
         }
@@ -335,6 +356,16 @@ namespace PlayerCorpse.Entities
                 ActionLangCode = $"{Constants.ModId}:blockhelp-collect",
                 MouseButton = EnumMouseButton.Right
             }];
+        }
+
+        private static int GetRandomColor(Random rand)
+        {
+            int a = 255;
+            int r = rand.Next(200, 256);
+            int g = rand.Next(100, 156);
+            int b = rand.Next(0, 56);
+
+            return ColorUtil.ToRgba(a, r, g, b);
         }
     }
 }

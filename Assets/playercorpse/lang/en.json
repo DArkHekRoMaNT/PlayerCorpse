@@ -11,5 +11,8 @@
   "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Helps to find your corpses. Server admins can also check the server-main.txt log for the exact coordinates of all corpses (uses in Creative)<br/><br/><b>Searches in 7x7 chunks around player (224x256x224 blocks by default)</b>",
   "corpsecompass-corpses-not-found": "No corpses found around",
   "corpsecompass-target-set": "Target set on the last corpse",
-  "corpsecompass-no-last-corpse": "Last corpse not found"
+  "corpsecompass-no-last-corpse": "Last corpse not found",
+
+  "waypoint-add-null-error": "Failed to create waypoint, maplayer is null",
+  "waypoint-remove-error": "Failed to remove waypoint, player entity is null"
 }

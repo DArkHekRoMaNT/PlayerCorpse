@@ -41,6 +41,9 @@ namespace PlayerCorpse
         public string WaypointColor { get; set; } = "crimson";
 
         public bool PinWaypoint { get; set; } = true;
+
+        [Description("If true, the waypoint will be removed when the corpse is collected")]
+        public bool RemoveWaypointOnCollect { get; set; } = true;
         public bool DebugMode { get; set; } = false;
 
         [Description("Makes corpses available to everyone after N in-game hours (0 - always, below zero - never)")]

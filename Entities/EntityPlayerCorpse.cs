@@ -1,5 +1,6 @@
 using CommonLib.UI;
 using CommonLib.Utils;
+using PlayerCorpse.Systems;
 using System;
 using System.IO;
 using System.Text;
@@ -67,6 +68,8 @@ namespace PlayerCorpse.Entities
                 return alwaysFree || !neverFree && freeNow;
             }
         }
+
+        public Guid CorpseId { get; set; } = Guid.NewGuid();
 
         public override void Initialize(EntityProperties properties, ICoreAPI api, long InChunkIndex3d)
         {
@@ -203,6 +206,10 @@ namespace PlayerCorpse.Entities
                             else if (SecondsPassed > Core.Config.CorpseCollectionTime)
                             {
                                 Collect(byPlayer);
+                                if (Core.Config.RemoveWaypointOnCollect)
+                                {
+                                    DeathContentManager.RemoveDeathPoint(byPlayer.Entity, this);
+                                }
                             }
                         }
 

@@ -1,13 +1,13 @@
 {
-  "item-creature-playercorpse": "Tělo hráče",
-  "blockhelp-collect": "Sebrat",
-  "game:ingameerror-not-corpse-owner": "Tohle není tvoje mrtvola!",
-  "corpse-free": "Zdarma pro všechny",
-  "corpse-created(date={0})": "Vytvořeno {0}",
-  "item-corpsecompass": "Mrtvý Kompas",
-  "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Použití",
-  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Pomáhá najít vaše mrtvoly. Správci serveru mohou také zkontrolovat v protokolu server-main.txt přesné souřadnice všech mrtvol (použití v Creative)<br/><br/><b>Vyhledává v blocích 7x7 kolem hráče (ve výchozím nastavení 224x256x224 bloků)</b>",
-  "corpsecompass-corpses-not-found": "V okolí nebyly nalezeny žádné mrtvoly",
-  "corpsecompass-target-set": "Cíl nastaven na poslední mrtvolu",
-  "corpsecompass-no-last-corpse": "Poslední mrtvola nenalezena"
+    "item-creature-playercorpse": "Tělo hráče",
+    "blockhelp-collect": "Sebrat",
+    "game:ingameerror-not-corpse-owner": "Tohle není tvoje mrtvola!",
+    "corpse-free": "Pro všechny zdarma",
+    "corpse-created(date={0})": "Vytvořeno {0}",
+    "item-corpsecompass": "Mrtvý Kompas",
+    "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Použití",
+    "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Pomáhá najít vaše mrtvoly. Správci serveru mohou také zkontrolovat v protokolu server-main.txt přesné souřadnice všech mrtvol (použití v Creative)<br/><br/><b>Vyhledává v blocích 7x7 kolem hráče (ve výchozím nastavení 224x256x224 bloků)</b>",
+    "corpsecompass-corpses-not-found": "V okolí nebyly nalezeny žádné mrtvoly",
+    "corpsecompass-target-set": "Cíl nastaven na poslední mrtvolu",
+    "corpsecompass-no-last-corpse": "Poslední mrtvola nenalezena"
 }

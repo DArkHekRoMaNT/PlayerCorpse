@@ -1,13 +1,13 @@
 {
-  "item-creature-playercorpse": "玩家尸体",
-  "blockhelp-collect": "取回",
-  "game:ingameerror-not-corpse-owner": "这不是你的尸体！",
-  "corpse-free": "对所有人开放",
-  "corpse-created(date={0})": "已创建 {0}",
-  "item-corpsecompass": "尸体指针",
-  "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "用途",
-  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "有助于找到你的尸体.服务器管理员还可以检查服务器主 txt 日志,查看所有尸体的确切坐标(在创造模式中使用)<br/><br/><b>以玩家周围 7x7 块为单位进行搜索(默认为 224x256x224 块)</b>",
-  "corpsecompass-corpses-not-found": "周围没有发现尸体",
-  "corpsecompass-target-set": "目标设定为最后一具尸体",
-  "corpsecompass-no-last-corpse": "未找到最后一具尸体"
+    "item-creature-playercorpse": "玩家尸体",
+    "blockhelp-collect": "取回",
+    "game:ingameerror-not-corpse-owner": "这不是你的尸体！",
+    "corpse-free": "对所有人开放",
+    "corpse-created(date={0})": "已创建 {0}",
+    "item-corpsecompass": "尸体指针",
+    "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "用途",
+    "playercorpse:item-handbooktext-playercorpse:corpsecompass": "有助于找到你的尸体.服务器管理员还可以检查服务器主 txt 日志,查看所有尸体的确切坐标(在创造模式中使用)<br/><br/><b>以玩家周围 7x7 块为单位进行搜索(默认为 224x256x224 块)</b>",
+    "corpsecompass-corpses-not-found": "周围没有发现尸体",
+    "corpsecompass-target-set": "目标设定为最后一具尸体",
+    "corpsecompass-no-last-corpse": "未找到最后一具尸体"
 }

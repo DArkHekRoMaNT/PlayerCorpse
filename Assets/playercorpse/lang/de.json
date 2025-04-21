@@ -1,13 +1,13 @@
 {
-  "item-creature-playercorpse": "Spielerleiche",
-  "blockhelp-collect": "Einsammeln",
-  "game:ingameerror-not-corpse-owner": "Das ist nicht deine Leiche!",
-  "corpse-free": "Frei für jeden",
-  "corpse-created(date={0})": "Erstellt {0}",
-  "item-corpsecompass": "Leichenkompass",
-  "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Verwendung",
-  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Hilft dir, deine Leichen zu finden. Serveradministratoren können auch das Serverprotokoll überprüfen, um die genauen Koordinaten aller Leichen herauszufinden (server-main.txt). <br/><br/><b> Funktioniert nur für die aktuelle Chunk-Spalte, standardmäßig sind dies 32x256x32 Blöcke</b>",
-  "corpsecompass-corpses-not-found": "Keine Leichen in dieser Chunk-Spalte gefunden",
-  "corpsecompass-target-set": "Ziel auf die letzte Leiche gesetzt",
-  "corpsecompass-no-last-corpse": "Keine letzte Leiche gefunden"
+    "item-creature-playercorpse": "Spielerleiche",
+    "blockhelp-collect": "Einsammeln",
+    "game:ingameerror-not-corpse-owner": "Das ist nicht deine Leiche!",
+    "corpse-free": "Frei für jeden",
+    "corpse-created(date={0})": "Erstellt {0}",
+    "item-corpsecompass": "Leichenkompass",
+    "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Verwendung",
+    "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Hilft dir, deine Leichen zu finden. Serveradministratoren können auch das Serverprotokoll überprüfen, um die genauen Koordinaten aller Leichen herauszufinden (server-main.txt). <br/><br/><b> Funktioniert nur für die aktuelle Chunk-Spalte, standardmäßig sind dies 32x256x32 Blöcke</b>",
+    "corpsecompass-corpses-not-found": "Keine Leichen in dieser Chunk-Spalte gefunden",
+    "corpsecompass-target-set": "Ziel auf die letzte Leiche gesetzt",
+    "corpsecompass-no-last-corpse": "Keine letzte Leiche gefunden"
 }

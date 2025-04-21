@@ -1,13 +1,13 @@
 {
-  "item-creature-playercorpse": "Труп игрока",
-  "blockhelp-collect": "Собрать",
-  "game:ingameerror-not-corpse-owner": "Это не ваш труп!",
-  "corpse-free": "Доступен для всех",
-  "corpse-created(date={0})": "Создано: {0}",
-  "item-corpsecompass": "Компас для трупов",
-  "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Применение",
-  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Помогает найти ваши трупы. Администраторы серверов также могут проверить точные координаты всех трупов в журнале server-main.txt (используйте в креативе)<br/><br/><b>Ищет в 7x7 чанках вокруг игрока (224x256x224 блоков по умолчанию)</b>",
-  "corpsecompass-corpses-not-found": "Нет трупов вокруг",
-  "corpsecompass-target-set": "Цель установлена на последний труп",
-  "corpsecompass-no-last-corpse": "Предыдущий труп не найден"
+    "item-creature-playercorpse": "Труп игрока",
+    "blockhelp-collect": "Собрать",
+    "game:ingameerror-not-corpse-owner": "Это не ваш труп!",
+    "corpse-free": "Доступен для всех",
+    "corpse-created(date={0})": "Создано: {0}",
+    "item-corpsecompass": "Компас для трупов",
+    "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Применение",
+    "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Помогает найти ваши трупы. Администраторы серверов также могут проверить точные координаты всех трупов в журнале server-main.txt (используйте в креативе)<br/><br/><b>Ищет в 7x7 чанках вокруг игрока (224x256x224 блоков по умолчанию)</b>",
+    "corpsecompass-corpses-not-found": "Нет трупов вокруг",
+    "corpsecompass-target-set": "Цель установлена на последний труп",
+    "corpsecompass-no-last-corpse": "Предыдущий труп не найден"
 }

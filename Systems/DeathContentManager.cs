@@ -1,8 +1,8 @@
 using CommonLib.Extensions;
 using CommonLib.Utils;
+using HarmonyLib;
 using PlayerCorpse.Entities;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -20,9 +20,10 @@ namespace PlayerCorpse.Systems
 {
     public class DeathContentManager : ModSystem
     {
+        private static readonly MethodInfo _resendWaypointsMethod = AccessTools.Method(typeof(WaypointMapLayer), "ResendWaypoints");
+        private static readonly MethodInfo _rebuildMapComponentsMethod = AccessTools.Method(typeof(WaypointMapLayer), "RebuildMapComponents");
+
         private ICoreServerAPI _sapi = null!;
-        private static readonly MethodInfo ResendWaypoints = typeof(WaypointMapLayer).GetMethod("ResendWaypoints", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static readonly MethodInfo RebuildMapComponents = typeof(WaypointMapLayer).GetMethod("RebuildMapComponents", BindingFlags.NonPublic | BindingFlags.Instance);
 
         public override bool ShouldLoad(EnumAppSide forSide) => forSide == EnumAppSide.Server;
 
@@ -218,7 +219,7 @@ namespace PlayerCorpse.Systems
         {
             if (byPlayer.Api is ICoreServerAPI)
             {
-                var mapLayer = byPlayer.Api.ModLoader.GetModSystem<WorldMapManager>().MapLayers.FirstOrDefault(ml => ml is WaypointMapLayer) as WaypointMapLayer;
+                var mapLayer = GetMapLayer(byPlayer.Api);
 
                 if (mapLayer is null)
                 {
@@ -241,15 +242,20 @@ namespace PlayerCorpse.Systems
             }
         }
 
+        private static WaypointMapLayer? GetMapLayer(ICoreAPI api)
+        {
+            return api.ModLoader.GetModSystem<WorldMapManager>().MapLayers.FirstOrDefault(ml => ml is WaypointMapLayer) as WaypointMapLayer;
+        }
+
         public static void RemoveDeathPoint(EntityPlayer byPlayer, EntityPlayerCorpse corpseEntity)
         {
             if (byPlayer is null || corpseEntity is null) return;
 
-            if (byPlayer.Api is ICoreServerAPI)
+            if (byPlayer.Api is ICoreServerAPI sapi)
             {
-                IServerPlayer serverPlayer = byPlayer.Player as IServerPlayer;
-                var mapLayer = byPlayer.Api.ModLoader.GetModSystem<WorldMapManager>().MapLayers.FirstOrDefault(ml => ml is WaypointMapLayer) as WaypointMapLayer;
-                var waypoints = GetWaypoints(byPlayer.Api as ICoreServerAPI);
+                var serverPlayer = byPlayer.Player as IServerPlayer;
+                var mapLayer = GetMapLayer(sapi);
+                var waypoints = mapLayer?.Waypoints ?? [];
 
                 //For every waypoint the player owns, check if it matches the corpse entity id and remove it
                 foreach (Waypoint waypoint in waypoints.ToList().Where(w => w.OwningPlayerUid == byPlayer.PlayerUID))
@@ -257,17 +263,11 @@ namespace PlayerCorpse.Systems
                     if (waypoint.Guid == corpseEntity.CorpseId.ToString())
                     {
                         waypoints.Remove(waypoint);
-                        ResendWaypoints.Invoke(mapLayer, [serverPlayer]);
-                        RebuildMapComponents.Invoke(mapLayer, null);
+                        _resendWaypointsMethod.Invoke(mapLayer, [serverPlayer]);
+                        _rebuildMapComponentsMethod.Invoke(mapLayer, null);
                     }
                 }
             }
-        }
-
-        public static List<Waypoint> GetWaypoints(ICoreServerAPI api)
-        {
-            var waypoints = (api.ModLoader.GetModSystem<WorldMapManager>().MapLayers.FirstOrDefault(ml => ml is WaypointMapLayer) as WaypointMapLayer).Waypoints;
-            return waypoints;
         }
 
         public string GetDeathDataPath(IPlayer player)

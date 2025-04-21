@@ -1,3 +1,6 @@
 {
-  "game:tabname-playercorpse": "Player Corpse"
+  "game:tabname-playercorpse": "Player Corpse",
+
+  "waypoint-add-null-error": "Failed to create waypoint, maplayer is null",
+  "waypoint-remove-error": "Failed to remove waypoint, player entity is null"
 }

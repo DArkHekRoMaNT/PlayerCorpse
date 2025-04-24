@@ -1,11 +1,21 @@
 {
-    "item-creature-playercorpse": "Cadáver del jugador",
-    "blockhelp-collect": "Recoger",
-    "game:ingameerror-not-corpse-owner": "¡Este no es tu cadáver!",
-    "corpse-free": "Libre para todos",
-    "corpse-created(date={0})": "Creado {0}",
-    "item-corpsecompass": "Brújula de cadáver",
-    "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Uso",
-    "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Ayuda a encontrar tus cuerpos. Los administradores del servidor también pueden comprobar el registro del servidor.txt para las coordenadas exactas de todos los cuerpos (usado al agacharse) <br/><br/><b>Solo funciona para la actual columna de chunks, por defecto es de 32x256x32 bloques</b>",
-    "corpsecompass-corpses-not-found": "No se encontraron cuerpos en esta columna de chunks"
+  "_comentarios-1": "Player Corpse v1.20.0 || Enlace del Mod: https://mods.vintagestory.at/playercorpse ",
+  "_comentarios-2": "Traducido por C4BR3R4 || Última Modificación: 24/04/2025 || Publicación: https://c4br3r4.es/index.php?topic=1334.0 ",
+
+  "item-creature-playercorpse": "Cadáver de Jugador",
+  "blockhelp-collect": "Extraer contenido",
+
+  "game:ingameerror-not-corpse-owner": "¡Este Cadáver no es tuyo!",
+  "corpse-free": "<font color='lightcoral'>Contenido desprotegido.</font>",
+  "corpse-created(date={0})": "\nMuerte del {0}",
+
+  "item-corpsecompass": "Localizador de Cadáveres",
+  "playercorpse:item-handbooktitle-playercorpse:corpsecompass": "Uso",
+  "playercorpse:item-handbooktext-playercorpse:corpsecompass": "Ayuda a encontrar Cadáveres de Jugadores.<br><strong>Busca Cadáveres en un radio de 7x7 sectores (224x256x224 bloques predeterminados).</strong><br><br><font opacity='0.6'>Los administradores también pueden comprobar el registro 'server-main.txt' para obtener las coordenadas exactas de todos los Cadáveres.</font>",
+  "corpsecompass-corpses-not-found": "No se han encontrado Cadáveres cercanos.",
+  "corpsecompass-target-set": "Objetivo establecido en el último Cadáver.",
+  "corpsecompass-no-last-corpse": "No se ha encontrado el último Cadáver.",
+
+  "_añadido": "Añadido desde el código fuente: https://github.com/DArkHekRoMaNT/PlayerCorpse/blob/a13e30b27ac9999a2969a4492c530f9fbf90a533/Entities/EntityPlayerCorpse.cs#L3 ",
+  "game:{0}'s corpse": "Cadáver de {0}"
 }

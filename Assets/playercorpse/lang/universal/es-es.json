@@ -1,0 +1,9 @@
+{
+  "_comentarios-1": "Player Corpse v1.20.0 || Enlace del Mod: https://mods.vintagestory.at/playercorpse ",
+  "_comentarios-2": "Traducido por C4BR3R4 || Última Modificación: 24/04/2025 || Publicación: https://c4br3r4.es/index.php?topic=1334.0 ",
+
+  "game:tabname-playercorpse": "Cadáver",
+
+  "waypoint-add-null-error": "Fallo al crear la Marca, la Capa del Mapa no existe.",
+  "waypoint-remove-error": "Fallo al eliminar la Marca, el Cadáver del jugador no existe."
+}

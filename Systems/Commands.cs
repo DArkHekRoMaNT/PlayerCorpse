@@ -86,7 +86,7 @@ namespace PlayerCorpse.Systems
 
                 if (!giveToPlayer.InventoryManager.TryGiveItemstack(slot.Itemstack))
                 {
-                    _sapi.World.SpawnItemEntity(slot.Itemstack, giveToPlayer.Entity.ServerPos.XYZ.AddCopy(0, 1, 0));
+                    _sapi.World.SpawnItemEntity(slot.Itemstack, giveToPlayer.Entity.Pos.XYZ.AddCopy(0, 1, 0));
                 }
                 slot.Itemstack = null;
                 slot.MarkDirty();

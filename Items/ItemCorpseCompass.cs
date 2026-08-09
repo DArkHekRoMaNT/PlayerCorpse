@@ -97,7 +97,7 @@ namespace PlayerCorpse.Items
             if (api.Side == EnumAppSide.Client && nearestCorpsePos != null)
             {
                 var targetPos = nearestCorpsePos.ToVec3d().Add(.5, 0, .5);
-                var startPos = byEntity.SidedPos.AheadCopy(1).XYZ.Add(0, byEntity.LocalEyePos.Y, 0);
+                var startPos = byEntity.Pos.AheadCopy(1).XYZ.Add(0, byEntity.LocalEyePos.Y, 0);
                 var relativePos = targetPos - startPos;
 
 
@@ -126,7 +126,7 @@ namespace PlayerCorpse.Items
                     ownerUID = null; // show all corpses in creative
                 }
 
-                foreach (EntityPlayerCorpse corpse in GetCorpsesAround(SearchRadius, byEntity.ServerPos.XYZInt, ownerUID))
+                foreach (EntityPlayerCorpse corpse in GetCorpsesAround(SearchRadius, byEntity.Pos.XYZInt, ownerUID))
                 {
                     double currDistance = byEntity.Pos.SquareDistanceTo(corpse.Pos);
                     if (currDistance <= distance)
@@ -141,7 +141,7 @@ namespace PlayerCorpse.Items
                     slot.Itemstack.Attributes.SetVec3i("nearestCorpsePos", nearestCorpse.Pos.XYZInt);
                     slot.MarkDirty();
 
-                    string text = $"{nearestCorpse.OwnerName}'s corpse found at {nearestCorpse.SidedPos.XYZ}";
+                    string text = $"{nearestCorpse.OwnerName}'s corpse found at {nearestCorpse.Pos.XYZ}";
                     ModLogger.Notification(text);
                     if (Core.Config.DebugMode)
                     {

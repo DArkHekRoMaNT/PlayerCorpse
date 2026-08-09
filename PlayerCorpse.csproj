@@ -1,6 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net8</TargetFramework>
+		<!-- Vintage Story 1.22.x runs on .NET 10. -->
+		<TargetFramework>net10.0</TargetFramework>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<OutputPath>bin/$(Configuration)/Mods/PlayerCorpse</OutputPath>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
@@ -13,7 +16,40 @@
 		<NoWarn>CS1591</NoWarn>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<VintagestoryPath Condition="'$(VintagestoryPath)' == ''">$(VINTAGE_STORY)</VintagestoryPath>
+	</PropertyGroup>
+
+	<!-- Vintage Story 1.22 API references. Set VINTAGE_STORY or pass -p:VintagestoryPath=... -->
+	<ItemGroup>
+		<Reference Include="VintagestoryAPI" HintPath="$(VintagestoryPath)/VintagestoryAPI.dll" Private="false" />
+		<Reference Include="VintagestoryLib" HintPath="$(VintagestoryPath)/VintagestoryLib.dll" Private="false" />
+		<Reference Include="VSSurvivalMod" HintPath="$(VintagestoryPath)/Mods/VSSurvivalMod.dll" Private="false" />
+		<Reference Include="VSEssentials" HintPath="$(VintagestoryPath)/Mods/VSEssentials.dll" Private="false" />
+		<Reference Include="VSCreativeMod" HintPath="$(VintagestoryPath)/Mods/VSCreativeMod.dll" Private="false" />
+		<Reference Include="Newtonsoft.Json" HintPath="$(VintagestoryPath)/Lib/Newtonsoft.Json.dll" Private="false" />
+		<Reference Include="0Harmony" HintPath="$(VintagestoryPath)/Lib/0Harmony.dll" Private="false" />
+		<Reference Include="protobuf-net" HintPath="$(VintagestoryPath)/Lib/protobuf-net.dll" Private="false" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="../CommonLib/CommonLib.csproj" Private="false" />
+	</ItemGroup>
+
+	<Target Name="ValidateVintagestoryPath" BeforeTargets="ResolveAssemblyReferences">
+		<Error Condition="!Exists('$(VintagestoryPath)/VintagestoryAPI.dll')"
+		       Text="Vintage Story API not found. Set VINTAGE_STORY or pass -p:VintagestoryPath=/path/to/VintageStory." />
+	</Target>
+
 	<ItemGroup>
 		<PackageReference Include="Nullable" Version="1.3.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="modinfo.json" CopyToOutputDirectory="PreserveNewest" />
+		<Content Include="Assets/**/*" Link="assets/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+		<Content Include="modicon.png" CopyToOutputDirectory="PreserveNewest" />
+		<Content Include="LICENSE" CopyToOutputDirectory="PreserveNewest" />
+		<Content Include="README.md" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 </Project>

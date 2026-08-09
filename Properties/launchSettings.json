@@ -2,27 +2,27 @@
   "profiles": {
     "Client": {
       "commandName": "Executable",
-      "executablePath": "%VINTAGE_STORY%/$(GameVersion)/Vintagestory.exe",
-      "commandLineArgs": "--addModPath $(ModsDir) --addOrigin $(AssetsDir) --tracelog",
-      "workingDirectory": "%VINTAGE_STORY%/$(GameVersion)"
+      "executablePath": "$(VINTAGE_STORY)/$(GameVersion)/Vintagestory.exe",
+      "commandLineArgs": "--addModPath \"$(MSBuildProjectDirectory)/bin/$(Configuration)/Mods\" --tracelog",
+      "workingDirectory": "$(VINTAGE_STORY)"
     },
     "Test World": {
       "commandName": "Executable",
-      "executablePath": "%VINTAGE_STORY%/$(GameVersion)/Vintagestory.exe",
-      "commandLineArgs": "--playStyle \"preset-surviveandbuild\" --openWorld \"$(ProjectName) Test World\" --addModPath $(ModsDir) --addOrigin $(AssetsDir) --tracelog",
-      "workingDirectory": "%VINTAGE_STORY%/$(GameVersion)"
+      "executablePath": "$(VINTAGE_STORY)/$(GameVersion)/Vintagestory.exe",
+      "commandLineArgs": "--playStyle \"preset-surviveandbuild\" --openWorld \"$(MSBuildProjectName) Test World\" --addModPath \"$(MSBuildProjectDirectory)/bin/$(Configuration)/Mods\" --tracelog",
+      "workingDirectory": "$(VINTAGE_STORY)"
     },
     "Test World (Flat)": {
       "commandName": "Executable",
-      "executablePath": "%VINTAGE_STORY%/$(GameVersion)/Vintagestory.exe",
-      "commandLineArgs": "--openWorld \"$(ProjectName) Test World\" --addModPath $(ModsDir) --addOrigin $(AssetsDir) --tracelog",
-      "workingDirectory": "%VINTAGE_STORY%/$(GameVersion)"
+      "executablePath": "$(VINTAGE_STORY)/$(GameVersion)/Vintagestory.exe",
+      "commandLineArgs": "--openWorld \"$(MSBuildProjectName) Test World\" --addModPath \"$(MSBuildProjectDirectory)/bin/$(Configuration)/Mods\" --tracelog",
+      "workingDirectory": "$(VINTAGE_STORY)"
     },
     "Server": {
       "commandName": "Executable",
-      "executablePath": "%VINTAGE_STORY%/$(GameVersion)/VintagestoryServer.exe",
-      "commandLineArgs": "--addModPath $(ModsDir) --addOrigin $(AssetsDir) --tracelog",
-      "workingDirectory": "%VINTAGE_STORY%/$(GameVersion)"
+      "executablePath": "$(VINTAGE_STORY)/$(GameVersion)/VintagestoryServer.exe",
+      "commandLineArgs": "--addModPath \"$(MSBuildProjectDirectory)/bin/$(Configuration)/Mods\" --tracelog",
+      "workingDirectory": "$(VINTAGE_STORY)"
     }
   }
 }

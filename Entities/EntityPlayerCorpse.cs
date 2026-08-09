@@ -199,7 +199,7 @@ namespace PlayerCorpse.Entities
                             if (Inventory == null || Inventory.Count == 0)
                             {
                                 string format = "{0} at {1} is empty and will be removed immediately, id {3}";
-                                string msg = string.Format(format, GetName(), SidedPos.XYZ.RelativePos(Api), byPlayer.PlayerName, EntityId);
+                                string msg = string.Format(format, GetName(), Pos.XYZ.RelativePos(Api), byPlayer.PlayerName, EntityId);
                                 ModLogger.Notification(msg);
                                 Die();
                             }
@@ -250,7 +250,7 @@ namespace PlayerCorpse.Entities
 
                     if (!byPlayer.InventoryManager.TryGiveItemstack(slot.Itemstack))
                     {
-                        Api.World.SpawnItemEntity(slot.Itemstack, byPlayer.Entity.ServerPos.XYZ.AddCopy(0, 1, 0));
+                        Api.World.SpawnItemEntity(slot.Itemstack, byPlayer.Entity.Pos.XYZ.AddCopy(0, 1, 0));
                     }
                     slot.Itemstack = null;
                     slot.MarkDirty();
@@ -260,7 +260,7 @@ namespace PlayerCorpse.Entities
             string msg = string.Format(
                 "{0} at {1} can be collected by {2}, id {3}",
                 GetName(),
-                SidedPos.XYZ.RelativePos(Api),
+                Pos.XYZ.RelativePos(Api),
                 byPlayer.PlayerName,
                 EntityId);
 
@@ -278,13 +278,13 @@ namespace PlayerCorpse.Entities
             if (reason == EnumDespawnReason.Death && Inventory != null)
             {
                 Inventory.Api = Api; // fix strange null
-                Inventory.DropAll(SidedPos.XYZ.AddCopy(0, 1, 0));
+                Inventory.DropAll(Pos.XYZ.AddCopy(0, 1, 0));
             }
 
             string msg = string.Format(
                 "{0} at {1} was destroyed, id {2}",
                 GetName(),
-                SidedPos.XYZ.RelativePos(Api),
+                Pos.XYZ.RelativePos(Api),
                 EntityId);
 
             ModLogger.Notification(msg);

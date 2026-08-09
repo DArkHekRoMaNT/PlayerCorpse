@@ -71,7 +71,7 @@ namespace PlayerCorpse.Systems
                     string message = string.Format(
                         "Created {0} at {1}, id {2}",
                         corpseEntity.GetName(),
-                        corpseEntity.SidedPos.XYZ.RelativePos(_sapi),
+                        corpseEntity.Pos.XYZ.RelativePos(_sapi),
                         corpseEntity.EntityId);
 
                     Mod.Logger.Notification(message);
@@ -115,13 +115,11 @@ namespace PlayerCorpse.Systems
             corpse.Inventory = TakeContentFromPlayer(byPlayer);
 
             // Fix dancing corpse issue
-            BlockPos floorPos = TryFindFloor(byPlayer.Entity.ServerPos.AsBlockPos);
+            BlockPos floorPos = TryFindFloor(byPlayer.Entity.Pos.AsBlockPos);
 
             // Attempt to align the corpse to the center of the block so that it does not crawl higher
-            Vec3d pos = floorPos.ToVec3d().Add(.5, 0, .5);
-
-            corpse.ServerPos.SetPos(pos);
-            corpse.Pos.SetPos(pos);
+            floorPos.Add(.5f, 0, .5f);
+            corpse.Pos.SetPosWithDimension(floorPos.ToVec3d());
             corpse.World = _sapi.World;
 
             return corpse;
@@ -229,7 +227,7 @@ namespace PlayerCorpse.Systems
 
                 Waypoint wp = new()
                 {
-                    Position = byPlayer.ServerPos.AsBlockPos.ToVec3d(),
+                    Position = byPlayer.Pos.AsBlockPos.ToVec3d(),
                     Title = Lang.Get($"{Constants.ModId}:death-waypoint-name", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
                     Pinned = Core.Config.PinWaypoint,
                     Icon = Core.Config.WaypointIcon,
